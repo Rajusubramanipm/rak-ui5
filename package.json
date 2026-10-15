@@ -1,0 +1,15 @@
+{
+  "name": "rak-services-ui5",
+  "version": "0.1.0",
+  "description": "RAK Services — Combined SAPUI5 Frontend (ZP02 New Building Permit + ZP03 Infrastructure NOC)",
+  "private": true,
+  "scripts": {
+    "start": "ui5 serve --open index.html",
+    "start:noopen": "ui5 serve",
+    "build": "ui5 build --all",
+    "lint": "eslint webapp"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^4.0.0"
+  }
+}

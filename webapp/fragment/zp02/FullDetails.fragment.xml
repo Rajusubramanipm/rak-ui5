@@ -1,0 +1,137 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <!-- Project Details — Figma "Property details general NEW" 115:3421
+         (1000 × 610, red gradient header, horizontal tabs, 70px footer). Tab content is static mock data. -->
+    <Dialog id="dlgFullDetails"
+            class="zp02ProjectDialog"
+            title="Project Details"
+            contentWidth="1000px"
+            contentHeight="486px"
+            resizable="false"
+            draggable="false"
+            verticalScrolling="false"
+            horizontalScrolling="false">
+
+        <customHeader>
+            <Bar class="zp02DlgHeader">
+                <contentLeft>
+                    <Title text="Project Details" level="H2" class="zp02DlgTitle" />
+                </contentLeft>
+                <contentRight>
+                    <Button icon="assets/figma/zp02/step1/full-details/icon-close-24-white.svg"
+                            type="Transparent"
+                            tooltip="Close"
+                            class="zp02DlgClose"
+                            press=".onCloseFullDetails" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <content>
+            <IconTabBar id="fullDetailsTabBar"
+                        class="zp02PDTabs"
+                        stretchContentHeight="true"
+                        expandable="false"
+                        headerMode="Inline"
+                        backgroundDesign="Transparent"
+                        headerBackgroundDesign="Transparent"
+                        applyContentPadding="false">
+                <items>
+                    <IconTabFilter text="Map" key="map">
+                        <content>
+                            <core:HTML content="&lt;div class=&#x27;zp02PD__panel&#x27;&gt;&lt;div class=&#x27;zp02PD__map&#x27;&gt;&lt;img class=&#x27;zp02PD__mapImg&#x27; src=&#x27;assets/figma/zp02/step1/full-details/map-photo.png&#x27; alt=&#x27;Map of the project location&#x27; /&gt;&lt;div class=&#x27;zp02PD__pinWrap&#x27;&gt;&lt;div class=&#x27;zp02PD__tooltip&#x27;&gt;AL Mubtaser Street,&lt;br/&gt;4th Floor, Eastern,&lt;br/&gt;Kitchen Building, 4311&lt;/div&gt;&lt;img class=&#x27;zp02PD__tooltipArrow&#x27; src=&#x27;assets/figma/zp02/step1/full-details/tooltip-arrow.svg&#x27; alt=&#x27;&#x27; /&gt;&lt;img class=&#x27;zp02PD__pin&#x27; src=&#x27;assets/figma/zp02/step1/full-details/icon-location-pin-24.svg&#x27; alt=&#x27;&#x27; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" />
+                        </content>
+                    </IconTabFilter>
+                    <IconTabFilter text="General" key="general">
+                        <content>
+                            <ScrollContainer height="100%" vertical="true" class="zp02PD__scroll">
+                                <core:HTML content="{dlgProject>/generalHtml}" />
+                            </ScrollContainer>
+                        </content>
+                    </IconTabFilter>
+                    <IconTabFilter text="Business Partners" key="biz">
+                        <content>
+                            <ScrollContainer height="100%" vertical="true" class="zp02PD__scroll">
+                                <core:HTML content="{dlgProject>/bpsHtml}" />
+                            </ScrollContainer>
+                        </content>
+                    </IconTabFilter>
+                    <IconTabFilter text="Land" key="land">
+                        <content>
+                            <ScrollContainer height="100%" vertical="true" class="zp02PD__scroll">
+                                <VBox renderType="Bare" class="zp02PD__panel" busy="{dlgProject>/landBusy}" busyIndicatorDelay="0">
+                                    <VBox renderType="Bare" class="zp02PD__fields zp02PD__fields--4">
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Land Usage" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/landUsage}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Land Type" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/landType}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Parcel Status" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/parcelStatus}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Block Number" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/blockNumber}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Built Up Ratio" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/builtRatio}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Maximum Building Height" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/maxBuildHeight}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Gate Level" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/gateLevel}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Demarcation" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/demarcation}" class="zp02PD__value" />
+                                    </VBox>
+                                    <VBox renderType="Bare" class="zp02PD__field">
+                                        <Text text="Parcel Area Measurement" class="zp02PD__label" />
+                                        <Text text="{dlgProject>/land/plotArea}" class="zp02PD__value" />
+                                    </VBox>
+                                    </VBox>
+                                    <core:HTML content="&lt;div class=&#x27;zp02PD__download&#x27;&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-download-20.svg&#x27; alt=&#x27;&#x27; width=&#x27;24&#x27; height=&#x27;24&#x27; /&gt;&lt;div&gt;&lt;span class=&#x27;zp02PD__downloadLabel&#x27;&gt;Download reference document&lt;/span&gt;&lt;span class=&#x27;zp02PD__link&#x27;&gt;Development Control Regulations (DCR)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" />
+                                </VBox>
+                            </ScrollContainer>
+                        </content>
+                    </IconTabFilter>
+                    <IconTabFilter text="Buildings" key="buildings">
+                        <content>
+                            <ScrollContainer height="100%" vertical="true" class="zp02PD__scroll">
+                                <core:HTML content="{dlgProject>/buildingsHtml}" />
+                            </ScrollContainer>
+                        </content>
+                    </IconTabFilter>
+                    <IconTabFilter text="Documents" key="documents">
+                        <content>
+                            <ScrollContainer height="100%" vertical="true" class="zp02PD__scroll">
+                                <core:HTML content="&lt;div class=&#x27;zp02PD__panel&#x27;&gt;&lt;div class=&#x27;zp02PD__docs&#x27; role=&#x27;table&#x27; aria-label=&#x27;Documents&#x27;&gt;&lt;div class=&#x27;zp02PD__docHead&#x27; role=&#x27;row&#x27;&gt;&lt;span role=&#x27;columnheader&#x27; class=&#x27;zp02PD__dName&#x27;&gt;Document Name&lt;/span&gt;&lt;span role=&#x27;columnheader&#x27; class=&#x27;zp02PD__dNum&#x27;&gt;Number&lt;/span&gt;&lt;span role=&#x27;columnheader&#x27; class=&#x27;zp02PD__dDept&#x27;&gt;Department&lt;/span&gt;&lt;span role=&#x27;columnheader&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Issued &lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-sort-default.svg&#x27; alt=&#x27;&#x27; /&gt;&lt;/span&gt;&lt;span role=&#x27;columnheader&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Expires &lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-sort-desc.svg&#x27; alt=&#x27;&#x27; /&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#x27;zp02PD__docRow&#x27; role=&#x27;row&#x27;&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dName&#x27;&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-doc-permit-24.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__docIcon&#x27; /&gt;&lt;span class=&#x27;zp02PD__docName&#x27;&gt;Parking shade permit&lt;/span&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-open-link.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__openIcon&#x27; /&gt;&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dNum&#x27;&gt;9876567890&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDept&#x27;&gt;Municipality&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2022&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2024&lt;/span&gt;&lt;/div&gt;&lt;div class=&#x27;zp02PD__docRow&#x27; role=&#x27;row&#x27;&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dName&#x27;&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-doc-permit-24.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__docIcon&#x27; /&gt;&lt;span class=&#x27;zp02PD__docName&#x27;&gt;Fisherman Licenses&lt;/span&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-open-link.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__openIcon&#x27; /&gt;&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dNum&#x27;&gt;9876567890&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDept&#x27;&gt;EPDA&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2022&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2024&lt;/span&gt;&lt;/div&gt;&lt;div class=&#x27;zp02PD__docRow&#x27; role=&#x27;row&#x27;&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dName&#x27;&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-doc-license-24.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__docIcon&#x27; /&gt;&lt;span class=&#x27;zp02PD__docName&#x27;&gt;Zeita Resturant&lt;/span&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-open-link.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__openIcon&#x27; /&gt;&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dNum&#x27;&gt;9876567890&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDept&#x27;&gt;DED&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2022&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2024&lt;/span&gt;&lt;/div&gt;&lt;div class=&#x27;zp02PD__docRow&#x27; role=&#x27;row&#x27;&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dName&#x27;&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-doc-certificate-24.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__docIcon&#x27; /&gt;&lt;span class=&#x27;zp02PD__docName&#x27;&gt;Property Deed&lt;/span&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-open-link.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__openIcon&#x27; /&gt;&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dNum&#x27;&gt;9876567890&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDept&#x27;&gt;Municipality&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2022&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2024&lt;/span&gt;&lt;/div&gt;&lt;div class=&#x27;zp02PD__docRow&#x27; role=&#x27;row&#x27;&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dName&#x27;&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-doc-deed-24.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__docIcon&#x27; /&gt;&lt;span class=&#x27;zp02PD__docName&#x27;&gt;Plan approval&lt;/span&gt;&lt;img src=&#x27;assets/figma/zp02/step1/full-details/icon-open-link.svg&#x27; alt=&#x27;&#x27; class=&#x27;zp02PD__openIcon&#x27; /&gt;&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dNum&#x27;&gt;9876567890&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDept&#x27;&gt;Municipality&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2022&lt;/span&gt;&lt;span role=&#x27;cell&#x27; class=&#x27;zp02PD__dDate&#x27;&gt;Aug 23, 2024&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" />
+                            </ScrollContainer>
+                        </content>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </content>
+
+        <footer>
+            <Toolbar class="zp02PDFooter">
+                <ToolbarSpacer />
+                <Button text="Close"
+                        class="zp02PDCloseBtn"
+                        press=".onCloseFullDetails" />
+            </Toolbar>
+        </footer>
+
+    </Dialog>
+
+</core:FragmentDefinition>

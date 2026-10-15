@@ -1,0 +1,26 @@
+﻿<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:rak="rak.services.control"
+    controllerName="rak.services.controller.zp03.modify.WorkLocation"
+    displayBlock="true">
+
+    <Page id="zp03WorkLocationPage" showHeader="false" class="zp03Page">
+        <content>
+            <VBox class="zp03PlaceholderCard">
+                <rak:RakStepper
+                    activeStep="{view>/activeStep}"
+                    stepLabels="{view>/stepLabels}" />
+                <Title text="ZP03 — Modify Infrastructure NOC" level="H2" titleStyle="H3" class="sapUiSmallMarginTop" />
+                <Title text="Work Location (placeholder)" level="H3" titleStyle="H4" class="sapUiTinyMarginTop" />
+                <Text
+                    text="Foundation placeholder only. Full Figma UI and BRD rules will be implemented after structure review."
+                    class="sapUiSmallMarginTop sapUiSmallMarginBottom" />
+                <HBox>
+                    <Button text="Back" type="Transparent" press=".onBack" />
+                    <Button text="Next" type="Emphasized" press=".onNext" class="sapUiTinyMarginBegin" />
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

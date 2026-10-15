@@ -1,0 +1,233 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:rak="rak.services.control"
+    controllerName="rak.services.controller.zp02.step1.ProjectSelection"
+    displayBlock="true">
+
+    <Page id="pageStep1" enableScrolling="true"
+        busy="{view>/busy}"
+        busyIndicatorDelay="0" class="rakPage rakApp zp02Step1 zp02Frame">
+
+        <!-- RAK Application Header -->
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <!-- Footer: Next button (right) -->
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentRight>
+                    <Button
+                        id="btnNext"
+                        text="{i18n>actionNext}"
+                        icon="sap-icon://navigation-right-arrow"
+                        iconFirst="false"
+                        press=".onNext"
+                        enabled="{= !!${view>/selectedProjectId} }"
+                        type="Emphasized"
+                        class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+        <content>
+
+            <!-- Permit heading: title + Save as Draft + Delete -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <items>
+                    <HBox alignItems="Center" class="rakPermitHeading__left">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg"
+                                width="30px" height="30px"
+                                class="rakPermitHeading__icon"
+                                alt="New Building Permit" />
+                            <Title text="New Building Permit"
+                                titleStyle="H4"
+                                class="rakPermitHeading__title" />
+                        </items>
+                    </HBox>
+                    <HBox alignItems="Center" class="rakPermitHeading__actions">
+                        <items>
+                            <Button id="btnSaveDraft"
+                                text="{i18n>actionSaveAsDraft}"
+                                icon="assets/figma/zp02/step1/icon-20px-b.svg"
+                                press=".onSaveAsDraft"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                            <Button id="btnDelete"
+                                text="{i18n>actionDelete}"
+                                icon="assets/figma/zp02/step1/icon-20px-a.svg"
+                                press=".onDelete"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                        </items>
+                    </HBox>
+                </items>
+            </HBox>
+
+            <!-- Stepper: SAPUI5 custom control -->
+            <rak:RakStepper
+                id="rakStepper"
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                extraSteps="2"
+                class="rakContent rakStepperWrap" />
+
+            <!-- Section header: title + description -->
+            <VBox class="rakSectionHeader rakContent">
+                <items>
+                    <Title text="{i18n>step1SectionTitle}" class="rakSection__title" />
+                    <Text text="{i18n>step1SectionDesc}" class="rakSection__desc" wrapping="true" />
+                </items>
+            </VBox>
+
+            <!-- Filter row -->
+            <HBox id="filterRow" class="rakFilters rakContent" alignItems="Center"
+                  justifyContent="SpaceBetween">
+                <items>
+                    <HBox class="rakFilters__dropdowns" alignItems="Center">
+                        <items>
+                            <Select id="selStatus"
+                                width="180px"
+                                class="rakSelect"
+                                selectedKey="{view>/filters/status}"
+                                change=".onFilterChange"
+                                tooltip="{i18n>step1FilterStatus}"
+                                items="{path: 'view>/statusOptions', templateShareable: false}">
+                                <core:Item key="{view>key}" text="{view>text}" />
+                            </Select>
+                            <Select id="selDate"
+                                width="160px"
+                                class="rakSelect"
+                                selectedKey="{view>/filters/date}"
+                                change=".onFilterChange"
+                                tooltip="{i18n>step1FilterDate}"
+                                items="{path: 'view>/dateOptions', templateShareable: false}">
+                                <core:Item key="{view>key}" text="{view>text}" />
+                            </Select>
+                        </items>
+                    </HBox>
+                    <SearchField
+                        id="sfSearch"
+                        width="280px"
+                        placeholder="{i18n>step1SearchPlaceholder}"
+                        value="{view>/filters/search}"
+                        search=".onSearch"
+                        liveChange=".onSearchLiveChange"
+                        class="rakSearch" />
+                </items>
+            </HBox>
+
+            <!-- Result count -->
+            <Text id="resultCount"
+                text="{parts: [{path: 'view>/resultCount'}, {path: 'view>/totalCount'}], formatter: '.formatResultCount'}"
+                class="rakResultCount rakContent" />
+
+            <!-- Project cards -->
+            <List id="projectList"
+                mode="None"
+                showSeparators="None"
+                noDataText="{i18n>step1NoResults}"
+                items="{path: 'view>/displayedProjects', templateShareable: false}"
+                updateFinished=".onListUpdateFinished"
+                class="rakContent rakProjectList">
+                <CustomListItem
+                    type="Active"
+                    press=".onCardPress">
+                    <content>
+                        <VBox class="rakCardInner" width="100%">
+                            <!-- Row 1: Project number + date (left) | Status badge (right) -->
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="rakCard__row1">
+                                <items>
+                                    <HBox alignItems="Center">
+                                        <items>
+                                            <Text class="rakCard__project-no" text="Project no. {view>projectNumber}" />
+                                            <Text class="rakCard__date-sep" text=" | " />
+                                            <Text class="rakCard__date" text="{view>createdOnDisplay}" />
+                                        </items>
+                                    </HBox>
+                                    <core:HTML
+                                        content="{= '&lt;span class=&quot;rakCard__status rakCard__status--' + ${view>statusCode} + '&quot;&gt;' + ${view>statusText} + '&lt;/span&gt;'}" />
+                                </items>
+                            </HBox>
+                            <!-- Row 2: Parcel ID | Owner (inline) -->
+                            <Text
+                                class="rakCard__meta-inline"
+                                text="{= 'Parcel ID ' + ${view>parcelId} + ' | Owner ' + ${view>ownerName}}" />
+                            <!-- Row 3: Address (left) | Full Details (right) -->
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="rakCard__row3">
+                                <items>
+                                    <Text class="rakCard__address" text="{view>address}" />
+                                    <HBox alignItems="Center" class="rakCard__detail-link-wrap">
+                                        <items>
+                                            <Image src="assets/figma/zp02/step1/icon-16px-a.svg" width="16px" height="16px" class="rakCard__detail-icon" alt="" />
+                                            <Link text="{i18n>step1DetailLink}" press=".onFullDetails" class="rakCard__detail-link" />
+                                        </items>
+                                    </HBox>
+                                </items>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </CustomListItem>
+            </List>
+
+            <!-- In-body Pagination row -->
+            <HBox id="paginationBar"
+                class="rakPagination rakContent"
+                visible="{= ${view>/totalPages} > 1 }"
+                alignItems="Center">
+                <Button id="btnPageFirst"
+                    icon="{= ${view>/currentPage} > 1 ? 'assets/figma/zp02/step1/icon-pagination-first-enabled.svg' : 'assets/figma/zp02/step1/icon-pagination-first.svg' }"
+                    type="Transparent"
+                    class="rakPagBtn"
+                    tooltip="First page"
+                    enabled="{= ${view>/currentPage} > 1 }"
+                    press=".onPageFirst" />
+                <Button id="btnPagePrev"
+                    icon="{= ${view>/currentPage} > 1 ? 'assets/figma/zp02/step1/icon-pagination-prev-enabled.svg' : 'assets/figma/zp02/step1/icon-pagination-prev-disabled.svg' }"
+                    type="Transparent"
+                    class="rakPagBtn"
+                    tooltip="Previous page"
+                    enabled="{= ${view>/currentPage} > 1 }"
+                    press=".onPagePrev" />
+                <Text text="{view>/currentPage} / {view>/totalPages}" class="rakPagText" />
+                <Button id="btnPageNext"
+                    icon="{= ${view>/currentPage} &lt; ${view>/totalPages} ? 'assets/figma/zp02/step1/icon-arrow-right.svg' : 'assets/figma/zp02/step1/icon-pagination-next-disabled.svg' }"
+                    type="Transparent"
+                    class="rakPagBtn"
+                    tooltip="Next page"
+                    enabled="{= ${view>/currentPage} &lt; ${view>/totalPages} }"
+                    press=".onPageNext" />
+                <Button id="btnPageLast"
+                    icon="{= ${view>/currentPage} &lt; ${view>/totalPages} ? 'assets/figma/zp02/step1/icon-pagination-last.svg' : 'assets/figma/zp02/step1/icon-pagination-last-disabled.svg' }"
+                    type="Transparent"
+                    class="rakPagBtn"
+                    tooltip="Last page"
+                    enabled="{= ${view>/currentPage} &lt; ${view>/totalPages} }"
+                    press=".onPageLast" />
+            </HBox>
+
+            <!-- Footer spacer -->
+            <core:HTML content="&lt;div style='height:40px'&gt;&lt;/div&gt;" />
+
+        </content>
+    </Page>
+
+</mvc:View>

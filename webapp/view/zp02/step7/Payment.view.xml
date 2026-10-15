@@ -1,0 +1,354 @@
+<mvc:View
+    controllerName="rak.services.controller.zp02.step7.Payment"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:rak="rak.services.control">
+
+    <Page id="paymentPage" enableScrolling="true" class="rakPage rakApp zp02Step7 zp02Frame">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+            <!-- Permit heading row -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <HBox class="rakPermitHeading__left" alignItems="Center">
+                    <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg" width="30px" height="30px" class="rakPermitHeading__icon" />
+                    <Title text="New Building Permit" titleStyle="H4" class="rakPermitHeading__title" />
+                </HBox>
+                <HBox class="rakPermitHeading__actions" alignItems="Center">
+                    <Button id="btnSaveDraft" text="{i18n>actionSaveAsDraft}" press=".onSaveDraft" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-b.svg" class="rakPermitAction" />
+                    <Button id="btnDelete" text="{i18n>actionDelete}" press=".onDelete" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-a.svg" class="rakPermitAction" />
+                </HBox>
+            </HBox>
+
+            <!-- Context bar -->
+            <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                <items>
+                    <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{appState>/selectedProject/ownerName}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{= ${appState>/selectedProject/parcelId} || ${appState>/selectedProject/projectNumber} || '409030901' }" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{appState>/selectedProject/address}" class="rakContextBar__value" />
+                </items>
+            </HBox>
+
+            <!-- Stepper -->
+            <rak:RakStepper
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                extraSteps="2"
+                class="rakContent rakStepperWrap" />
+
+        <VBox class="rakContent">
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- FEES SECTION                                            -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakPaySection rakPaySection--fees">
+                <Title text="{i18n>step7LabelFees}" level="H3" class="rakPaySectionTitle" />
+
+                <!-- Fee rows -->
+                <List id="feeList"
+                      items="{view>/feeLines}"
+                      showSeparators="None"
+                      class="rakPayFeeList">
+                    <CustomListItem class="rakPayFeeItem">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="rakPayFeeRow">
+                            <Text text="{view>description}" class="rakPayFeeDesc" />
+                            <Text text="AED {view>amount}" class="rakPayFeeAmount" />
+                        </HBox>
+                    </CustomListItem>
+                </List>
+
+                <!-- Divider before total -->
+                <core:HTML content="&lt;hr class='rakPayDivider'/&gt;" />
+
+                <!-- Total row -->
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="rakPayTotalRow">
+                    <Text text="{i18n>step7LabelTotal}" class="rakPayTotalLabel" />
+                    <Text text="AED {view>/total}" class="rakPayTotalAmount" />
+                </HBox>
+
+                <!-- Estimated fees link -->
+                <HBox class="rakPayEstimatedRow" alignItems="End">
+                    <Text text="{i18n>step7TextEstimatedFeesPrefix}" class="rakPayEstimatedText" />
+                    <Link text="{i18n>step7LinkEstimatedFees}"
+                          press=".onViewEstimatedFees"
+                          class="rakPayEstimatedLink" />
+                </HBox>
+            </VBox>
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- PAYMENT METHOD                                          -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakPaySection rakPaySection--methods">
+                <Title text="{i18n>step7LabelPaymentMethod}" level="H3" class="rakPaySectionTitle" />
+
+                <!-- 4 method cards (wrap on narrow viewports) -->
+                <HBox wrap="Wrap" class="rakPayMethodGrid">
+
+                    <!-- RAK.ae -->
+                    <Button id="btnRAKAE"
+                            text="{i18n>step7MethodRakAe}"
+                            type="Transparent"
+                            press=".onMethodPress"
+                            class="rakPayMethodCard">
+                        <customData>
+                            <core:CustomData key="method" value="RAK_AE" />
+                        </customData>
+                    </Button>
+
+                    <!-- mRak -->
+                    <Button id="btnMRAK"
+                            text="{i18n>step7MethodMRak}"
+                            type="Transparent"
+                            press=".onMethodPress"
+                            class="rakPayMethodCard">
+                        <customData>
+                            <core:CustomData key="method" value="M_RAK" />
+                        </customData>
+                    </Button>
+
+                    <!-- KIOSK -->
+                    <Button id="btnKIOSK"
+                            text="{i18n>step7MethodKiosk}"
+                            type="Transparent"
+                            press=".onMethodPress"
+                            class="rakPayMethodCard">
+                        <customData>
+                            <core:CustomData key="method" value="KIOSK" />
+                        </customData>
+                    </Button>
+
+                    <!-- Walk-in -->
+                    <Button id="btnWALKIN"
+                            text="{i18n>step7MethodWalkIn}"
+                            type="Transparent"
+                            press=".onMethodPress"
+                            class="rakPayMethodCard">
+                        <customData>
+                            <core:CustomData key="method" value="WALK_IN" />
+                        </customData>
+                    </Button>
+
+                </HBox>
+
+                <!-- MSG-V02 validation error -->
+                <HBox visible="{= !!${view>/validationError} }" class="sapUiTinyMarginTop">
+                    <Text text="{view>/validationError}" class="rakPayValidationError" />
+                </HBox>
+
+                <!-- â”€â”€â”€ RAK.ae info panel â”€â”€â”€ -->
+                <VBox visible="{= ${view>/paymentMethod} === 'RAK_AE' }"
+                      class="rakPayMethodInfo sapUiTinyMarginTop">
+                    <!-- Browser popup warning -->
+                    <HBox alignItems="Center" class="rakPayBrowserWarning sapUiSmallMarginBottom">
+                        <core:Icon src="sap-icon://alert" color="#BF1313" class="sapUiTinyMarginEnd" />
+                        <Text text="{i18n>step7WarnBrowserPopup}" class="rakPayBrowserWarningText" />
+                    </HBox>
+                    <!-- Pay with sub-section -->
+                    <VBox class="rakPayWithSection">
+                        <Text text="{i18n>step7LabelPayWith}" class="rakPayWithTitle sapUiTinyMarginBottom" />
+                        <HBox wrap="Wrap" class="rakPayWithCards">
+                            <!-- RAK Pay selected card -->
+                            <VBox class="rakPayCardOption rakPayCardOption--selected sapUiTinyMarginEnd sapUiTinyMarginBottom">
+                                <core:HTML content="&lt;span class='rakPayCardLabel'&gt;RAK Pay&lt;/span&gt;" />
+                            </VBox>
+                            <!-- Cards option -->
+                            <VBox class="rakPayCardOption sapUiTinyMarginEnd sapUiTinyMarginBottom">
+                                <HBox alignItems="Center" class="rakPayCardIcons">
+                                    <core:HTML content="&lt;span class='rakPayCardBadge'&gt;VISA&lt;/span&gt;" />
+                                    <core:HTML content="&lt;span class='rakPayCardBadge rakPayCardBadge--mc'&gt;MC&lt;/span&gt;" />
+                                    <core:HTML content="&lt;span class='rakPayCardBadge'&gt;AMEX&lt;/span&gt;" />
+                                    <core:HTML content="&lt;span class='rakPayCardBadge'&gt;Disc&lt;/span&gt;" />
+                                </HBox>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- â”€â”€â”€ mRak info panel â”€â”€â”€ -->
+                <VBox visible="{= ${view>/paymentMethod} === 'M_RAK' }"
+                      class="rakPayMethodInfo sapUiTinyMarginTop">
+                    <VBox class="rakPayAccountDetails">
+                        <Text text="{i18n>step7LabelAccountDetails}" class="rakPayAccountTitle sapUiTinyMarginBottom" />
+                        <HBox wrap="Wrap" class="rakPayAccountFields">
+                            <VBox class="rakPayAccountField sapUiSmallMarginEnd">
+                                <Label text="{i18n>step7LabelNumber}" class="rakPayAccountFieldLabel" />
+                                <Text text="{view>/accountDetails/number}" class="rakPayAccountFieldValue" />
+                            </VBox>
+                            <VBox class="rakPayAccountField">
+                                <Label text="{i18n>step7LabelCaseNumber}" class="rakPayAccountFieldLabel" />
+                                <Text text="{view>/accountDetails/caseNumber}" class="rakPayAccountFieldValue" />
+                            </VBox>
+                        </HBox>
+                        <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakPayInstrRow sapUiSmallMarginTop" wrap="Wrap">
+                            <HBox alignItems="Center">
+                                <core:Icon src="sap-icon://iphone-2" color="#BF1313" class="sapUiSmallMarginEnd rakPayInstrIcon" />
+                                <Text text="{i18n>step7InstrMRak}" class="rakPayInstrText" />
+                            </HBox>
+                            <Link text="{i18n>step7LinkEmailDetails}"
+                                  press=".onEmailDetails"
+                                  class="rakPayEmailLink" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- â”€â”€â”€ KIOSK info panel â”€â”€â”€ -->
+                <VBox visible="{= ${view>/paymentMethod} === 'KIOSK' }"
+                      class="rakPayMethodInfo sapUiTinyMarginTop">
+                    <VBox class="rakPayAccountDetails">
+                        <Text text="{i18n>step7LabelAccountDetails}" class="rakPayAccountTitle sapUiTinyMarginBottom" />
+                        <HBox wrap="Wrap" class="rakPayAccountFields">
+                            <VBox class="rakPayAccountField sapUiSmallMarginEnd">
+                                <Label text="{i18n>step7LabelNumber}" class="rakPayAccountFieldLabel" />
+                                <Text text="{view>/accountDetails/number}" class="rakPayAccountFieldValue" />
+                            </VBox>
+                            <VBox class="rakPayAccountField">
+                                <Label text="{i18n>step7LabelCaseNumber}" class="rakPayAccountFieldLabel" />
+                                <Text text="{view>/accountDetails/caseNumber}" class="rakPayAccountFieldValue" />
+                            </VBox>
+                        </HBox>
+                        <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakPayInstrRow sapUiSmallMarginTop" wrap="Wrap">
+                            <HBox alignItems="Center">
+                                <core:Icon src="sap-icon://kiosk-clock" color="#BF1313" class="sapUiSmallMarginEnd rakPayInstrIcon" />
+                                <Text text="{i18n>step7InstrKiosk}" class="rakPayInstrText" />
+                            </HBox>
+                            <Link text="{i18n>step7LinkEmailDetails}"
+                                  press=".onEmailDetails"
+                                  class="rakPayEmailLink" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- â”€â”€â”€ Walk-in info panel â”€â”€â”€ -->
+                <VBox visible="{= ${view>/paymentMethod} === 'WALK_IN' }"
+                      class="rakPayMethodInfo sapUiTinyMarginTop">
+                    <VBox class="rakPayAccountDetails">
+                        <Text text="{i18n>step7LabelAccountDetails}" class="rakPayAccountTitle sapUiTinyMarginBottom" />
+                        <HBox wrap="Wrap" class="rakPayAccountFields">
+                            <VBox class="rakPayAccountField sapUiSmallMarginEnd">
+                                <Label text="{i18n>step7LabelNumber}" class="rakPayAccountFieldLabel" />
+                                <Text text="{view>/accountDetails/number}" class="rakPayAccountFieldValue" />
+                            </VBox>
+                            <VBox class="rakPayAccountField">
+                                <Label text="{i18n>step7LabelCaseNumber}" class="rakPayAccountFieldLabel" />
+                                <Text text="{view>/accountDetails/caseNumber}" class="rakPayAccountFieldValue" />
+                            </VBox>
+                        </HBox>
+                        <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakPayInstrRow sapUiSmallMarginTop" wrap="Wrap">
+                            <HBox alignItems="Center">
+                                <core:Icon src="sap-icon://building" color="#BF1313" class="sapUiSmallMarginEnd rakPayInstrIcon" />
+                                <Text text="{i18n>step7InstrWalkIn}" class="rakPayInstrText" />
+                            </HBox>
+                            <Link text="{i18n>step7LinkEmailDetails}"
+                                  press=".onEmailDetails"
+                                  class="rakPayEmailLink" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+        </VBox>
+
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        <!-- ESTIMATED FINAL FEES DIALOG                                 -->
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        <dependents>
+            <Dialog id="estimatedFeesDialog"
+                    title="{i18n>step7EstimatedDialogTitle}"
+                    contentWidth="500px"
+                    class="rakPayEstimatedDialog">
+                <content>
+                    <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop sapUiSmallMarginBottom">
+
+                        <!-- Header row -->
+                        <HBox justifyContent="SpaceBetween" class="rakPayFeeRow rakPayFeeHeaderRow sapUiTinyMarginBottom">
+                            <Text text="{i18n>step7ColFeeDescription}" class="rakPayFeeHeaderLabel" />
+                            <Text text="{i18n>step7ColAmount}" class="rakPayFeeHeaderLabel" />
+                        </HBox>
+
+                        <!-- Estimated fee rows -->
+                        <List id="estimatedFeeList"
+                              items="{view>/estimatedFees}"
+                              showSeparators="None"
+                              class="rakPayFeeList">
+                            <CustomListItem class="rakPayFeeItem">
+                                <HBox justifyContent="SpaceBetween" alignItems="Center" class="rakPayFeeRow">
+                                    <Text text="{view>description}" class="rakPayFeeDesc" />
+                                    <Text text="AED {view>amount}" class="rakPayFeeAmount" />
+                                </HBox>
+                            </CustomListItem>
+                        </List>
+
+                        <!-- Divider + total -->
+                        <core:HTML content="&lt;hr class='rakPayDivider'/&gt;" />
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="rakPayTotalRow sapUiTinyMarginTop">
+                            <Text text="{i18n>step7LabelEstimatedTotal}" class="rakPayTotalLabel" />
+                            <Text text="AED {view>/estimatedTotal}" class="rakPayTotalAmount" />
+                        </HBox>
+
+                    </VBox>
+                </content>
+                <buttons>
+                    <Button text="Close"
+                            type="Emphasized"
+                            press=".onCloseEstimatedFees" />
+                </buttons>
+            </Dialog>
+        </dependents>
+
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        <!-- FOOTER â€” Back | Pay                                         -->
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button text="{i18n>actionBack}"
+                            type="Transparent"
+                            icon="sap-icon://navigation-left-arrow"
+                            press=".onBack"
+                            class="rakBackBtn" />
+                </contentLeft>
+                <contentMiddle>
+                    <!-- BusyIndicator shown during processing -->
+                    <BusyIndicator id="payBusyIndicator"
+                                   visible="{view>/isProcessing}"
+                                   size="1rem" />
+                </contentMiddle>
+                <contentRight>
+                    <Button text="{i18n>step7ActionPay}"
+                            icon="sap-icon://navigation-right-arrow"
+                            iconFirst="false"
+                            type="Emphasized"
+                            press=".onPay"
+                            enabled="{= !${view>/isProcessing} }"
+                            class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+    </Page>
+
+</mvc:View>

@@ -1,0 +1,15 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    controllerName="rak.services.controller.NotFound"
+    displayBlock="true">
+
+    <MessagePage
+        title="{i18n>notFoundTitle}"
+        text="{i18n>notFoundText}"
+        description="{i18n>notFoundDescription}"
+        showNavButton="true"
+        navButtonPress=".onNavHome"
+        icon="sap-icon://document" />
+
+</mvc:View>

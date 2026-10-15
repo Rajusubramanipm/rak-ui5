@@ -1,0 +1,9 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    controllerName="rak.services.controller.App"
+    displayBlock="true">
+
+    <App id="appShell" />
+
+</mvc:View>

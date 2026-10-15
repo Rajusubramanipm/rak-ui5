@@ -1,0 +1,6 @@
+{
+  "maxFileSizeMb": null,
+  "note": "Do not copy ZP02 10MB rule. ZP03 BRD allows large files (>100MB) based on configured maximum.",
+  "requirements": [],
+  "externalEntities": ["PSD", "E&", "Etihad WE", "DU"]
+}

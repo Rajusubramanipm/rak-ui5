@@ -1,0 +1,67 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    controllerName="rak.services.controller.Home"
+    displayBlock="true">
+
+    <Page
+        id="homePage"
+        showHeader="false"
+        backgroundDesign="Solid"
+        class="rakHome">
+
+        <content>
+            <l:VerticalLayout
+                width="100%"
+                class="sapUiMediumMarginTop sapUiMediumMarginBeginEnd">
+
+                <Title
+                    text="RAK Services"
+                    level="H1"
+                    titleStyle="H1"
+                    class="sapUiSmallMarginBottom" />
+
+                <Title
+                    text="Service catalogue entry (local foundation)"
+                    level="H2"
+                    titleStyle="H3"
+                    class="sapUiSmallMarginBottom" />
+
+                <Text
+                    text="{i18n>appTitle}"
+                    class="sapUiTinyMarginTop" />
+
+                <Text
+                    text="Environment: {app>/environment}"
+                    class="sapUiTinyMarginTop" />
+
+                <Text
+                    text="Language: {app>/currentLanguage}"
+                    class="sapUiTinyMarginTop sapUiSmallMarginBottom" />
+
+                <Text
+                    text="Select an independent service journey. ZP02 and ZP03 do not navigate into each other."
+                    class="sapUiSmallMarginBottom" />
+
+                <HBox class="sapUiSmallMarginTop" wrap="Wrap">
+                    <Button
+                        id="btnZp02"
+                        text="ZP02 — New Building Permit"
+                        type="Emphasized"
+                        press=".onNavigateToZp02"
+                        class="sapUiSmallMarginEnd sapUiSmallMarginBottom" />
+                    <Button
+                        id="btnZp03"
+                        text="ZP03 — Modify Infrastructure NOC"
+                        type="Default"
+                        press=".onNavigateToZp03"
+                        class="sapUiSmallMarginBottom" />
+                </HBox>
+
+            </l:VerticalLayout>
+        </content>
+
+    </Page>
+
+</mvc:View>

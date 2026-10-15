@@ -1,0 +1,24 @@
+﻿/* RAK Services — shared design tokens & shell styles */
+:root {
+  --rak-brand-red: #c41230;
+  --rak-brand-navy: #10233e;
+  --rak-border: #e8e8e8;
+  --rak-surface: #ffffff;
+  --rak-text: #1a1a1a;
+}
+
+.rakHome {
+  background: #f7f8fa;
+}
+
+.rakHeader--shell,
+.rakFooter--shell {
+  padding: 12px 16px;
+  border: 1px dashed var(--rak-border);
+  color: var(--rak-brand-navy);
+  font-family: Poppins, "72", Arial, sans-serif;
+}
+
+.rakStepper {
+  /* Stepper visual rules remain in zp02.css for now (shared visually). */
+}

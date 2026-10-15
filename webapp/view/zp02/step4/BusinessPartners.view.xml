@@ -1,0 +1,367 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:rak="rak.services.control"
+    controllerName="rak.services.controller.zp02.step4.BusinessPartners"
+    displayBlock="true">
+
+    <Page id="pageStep4" enableScrolling="true" class="rakPage rakApp zp02Step4 zp02Frame">
+
+        <!-- RAK Application Header -->
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <!-- Footer: Back + Next -->
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button id="btnBack" text="{i18n>actionBack}" icon="sap-icon://navigation-left-arrow" press=".onBack" type="Transparent" class="rakBackBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button id="btnNext" text="{i18n>actionNext}" icon="sap-icon://navigation-right-arrow" iconFirst="false" press=".onNext" type="Emphasized" class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+        <content>
+                <!-- Permit Context Bar -->
+                <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                    <HBox class="rakPermitHeading__left" alignItems="Center">
+                        <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg" width="30px" height="30px" class="rakPermitHeading__icon" />
+                        <Title text="New Building Permit" titleStyle="H4" class="rakPermitHeading__title" />
+                    </HBox>
+                    <HBox class="rakPermitHeading__actions" alignItems="Center">
+                        <Button id="btnSaveDraft" text="{i18n>actionSaveAsDraft}" press=".onSaveDraft" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-b.svg" class="rakPermitAction" />
+                        <Button id="btnDelete" text="{i18n>actionDelete}" press=".onDelete" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-a.svg" class="rakPermitAction" />
+                    </HBox>
+                </HBox>
+
+                <!-- Context sub-bar: Owner | Project | Address -->
+                <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                    <items>
+                        <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                        <Text text=" " class="rakContextBar__text" />
+                        <Text text="{view>/project/ownerName}" class="rakContextBar__value" />
+                        <Text text=" | " class="rakContextBar__sep" />
+                        <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                        <Text text=" " class="rakContextBar__text" />
+                        <Text text="{view>/project/projectNumber}" class="rakContextBar__value" />
+                        <Text text=" | " class="rakContextBar__sep" />
+                        <Text text="{view>/project/address}" class="rakContextBar__value" />
+                    </items>
+                </HBox>
+
+                <!-- Stepper -->
+                <rak:RakStepper activeStep="{view>/activeStep}" stepLabels="{view>/stepLabels}" extraSteps="2" class="rakContent rakStepperWrap" />
+
+            <VBox class="rakContent">
+                <!-- Main card -->
+                <VBox class="rakFormCard">
+
+                    <!-- Section header -->
+                    <Title text="{i18n>step4SectionTitle}" level="H2" class="rakStep4SectionTitle" />
+
+                    <!-- â”€â”€ CONSULTANCY ENGINEERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+                    <VBox class="rakSection">
+                        <!-- Sub-header row -->
+                        <HBox class="rakStep4SectionHead" alignItems="Center">
+                            <VBox class="sapUiTinyMarginEnd" style="flex:1">
+                                <HBox alignItems="Center">
+                                    <Title text="{i18n>step4SectionEngineers}" level="H3" class="rakStep4Subtitle" />
+                                    <core:HTML content="&lt;span style='color:#bf1313;font-size:14px;font-weight:600;margin-left:2px'&gt;*&lt;/span&gt;" />
+                                </HBox>
+                                <Text text="{i18n>step4EngineersDesc}" class="rakStep4Desc" />
+                            </VBox>
+                            <Button id="btnAddEngineer"
+                                    text="{view>/addEngineerLabel}"
+                                    press=".onAddEngineer"
+                                    type="Transparent"
+                                    class="rakAddEngBtn rakBtn--outline-red" />
+                        </HBox>
+
+                        <!-- Engineer table -->
+                        <Table id="engineerTable"
+                               items="{view>/engineers}"
+                               class="rakEngTable"
+                               showSeparators="None"
+                               inset="false">
+                            <columns>
+                                <Column width="160px">
+                                    <Text text="{i18n>step4ColSpeciality}" />
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>step4ColName}" />
+                                </Column>
+                                <Column width="200px">
+                                    <Text text="{i18n>step4ColMobile}" />
+                                </Column>
+                                <Column width="50px" hAlign="End" />
+                            </columns>
+                            <ColumnListItem>
+                                <!-- Speciality column -->
+                                <HBox alignItems="Center">
+                                    <!-- Required row: fixed text with * -->
+                                    <HBox visible="{view>isRequired}" alignItems="Center">
+                                        <Text text="{view>specialityText}" wrapping="false" />
+                                        <core:HTML content="&lt;span style='color:#bf1313'&gt;*&lt;/span&gt;" />
+                                    </HBox>
+                                    <!-- Optional row: editable Select -->
+                                    <Select id="selSpeciality"
+                                            visible="{= !${view>isRequired} }"
+                                            selectedKey="{view>specialityKey}"
+                                            change=".onSpecialityChange"
+                                            width="150px"
+                                            class="rakFormSelect"
+                                            items="{path: 'view>/specialities', templateShareable: true}">
+                                        <core:Item key="{view>key}" text="{view>text}" />
+                                    </Select>
+                                </HBox>
+
+                                <!-- Name column: Select from available engineers -->
+                                <VBox>
+                                    <Select id="selEngineerName"
+                                            selectedKey="{view>engineerId}"
+                                            change=".onEngineerSelected"
+                                            width="100%"
+                                            class="rakFormSelect"
+                                            items="{path: 'view>availableEngineers', templateShareable: true}">
+                                        <core:Item key="{view>engineerId}" text="{view>name}" />
+                                    </Select>
+                                </VBox>
+
+                                <!-- Mobile column: Input, auto-filled, editable -->
+                                <VBox>
+                                    <Input id="inpMobile"
+                                           value="{view>mobile}"
+                                           placeholder="971 50 0000000"
+                                           visible="{= !!${view>engineerId} }"
+                                           change=".onMobileChange"
+                                           valueState="{= ${view>mobileError} ? 'Error' : 'None' }"
+                                           valueStateText="{view>mobileError}"
+                                           class="rakFormInput" />
+                                </VBox>
+
+                                <!-- Action column: delete (optional rows only) -->
+                                <HBox justifyContent="End">
+                                    <Button icon="sap-icon://delete"
+                                            visible="{= !${view>isRequired} }"
+                                            press=".onDeleteEngineer"
+                                            type="Transparent"
+                                            tooltip="Delete engineer row" />
+                                </HBox>
+                            </ColumnListItem>
+                        </Table>
+                    </VBox>
+
+                    <!-- Divider -->
+                    <core:HTML content="&lt;div class='rakStep4Divider'&gt;&lt;/div&gt;" />
+
+                    <!-- â”€â”€ CONTRACTOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+                    <VBox class="rakStep4BpSection">
+                        <!-- Contractor section header -->
+                        <HBox class="rakStep4BpSectionHead" alignItems="Center">
+                            <VBox style="flex:1">
+                                <Title text="{i18n>step4SectionContractor}" level="H3" class="rakStep4Subtitle" />
+                                <Text text="{i18n>step4ContractorDesc}" class="rakStep4Desc" />
+                            </VBox>
+                            <!-- Resume Search: visible only when contractor is found -->
+                            <HBox id="hbxResumeContractor"
+                                  visible="{view>/contractorResultVisible}"
+                                  class="rakResumeSearch"
+                                  alignItems="Center">
+                                <core:Icon src="sap-icon://synchronize" />
+                                <Link text="{i18n>step4ResumeSearch}" press=".onResumeContractorSearch" />
+                            </HBox>
+                        </HBox>
+
+                        <!-- Contractor search form (visible when no contractor yet) -->
+                        <VBox id="vbxContractorSearch" visible="{view>/contractorSearchVisible}">
+                            <HBox class="rakContractorSearch">
+                                <VBox class="rakFormField">
+                                    <Label text="{i18n>step4LabelIdentificationType}" class="rakFormLabel" />
+                                    <Select id="selContractorType"
+                                            selectedKey="{view>/contractorSearchType}"
+                                            change=".onContractorTypeChange"
+                                            class="rakFormSelect rakFormSelect--full"
+                                            items="{view>/contractorIdentificationTypes}">
+                                        <core:Item key="{view>key}" text="{view>text}" />
+                                    </Select>
+                                </VBox>
+                                <VBox class="rakFormField">
+                                    <Label text="{i18n>step4LabelSearchValue}" class="rakFormLabel" />
+                                    <Input id="inpContractorSearch"
+                                           value="{view>/contractorSearchValue}"
+                                           placeholder="{i18n>step4PlaceholderSearch}"
+                                           class="rakFormInput rakFormInput--full"
+                                           submit=".onFindContractor" />
+                                </VBox>
+                                <VBox style="flex:0 0 auto;align-self:flex-end">
+                                    <Button id="btnFindContractor"
+                                            text="{i18n>step4ActionFind}"
+                                            press=".onFindContractor"
+                                            type="Emphasized"
+                                            class="rakFindBtn" />
+                                </VBox>
+                            </HBox>
+                            <!-- Error: no contractor found (MSG-F02 / name no-result) -->
+                            <MessageStrip id="msContractorError"
+                                          text="{view>/contractorSearchError}"
+                                          type="Error"
+                                          showCloseButton="false"
+                                          visible="{= !!${view>/contractorSearchError} }"
+                                          class="rakErrorStrip" />
+                        </VBox>
+
+                        <!-- Contractor result (visible when contractor found) -->
+                        <HBox id="hbxContractorResult"
+                              visible="{view>/contractorResultVisible}"
+                              class="rakContractorResult">
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4ContractorNo}" class="rakBpFieldLabel" />
+                                <Text text="{view>/contractorResult/contractorNo}" class="rakBpFieldValue" />
+                            </VBox>
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4ContractorName}" class="rakBpFieldLabel" />
+                                <Text text="{view>/contractorResult/name}" class="rakBpFieldValue" />
+                            </VBox>
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4TradeLicenceNo}" class="rakBpFieldLabel" />
+                                <Text text="{view>/contractorResult/tradeLicenceNo}" class="rakBpFieldValue" />
+                            </VBox>
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4TradeLicenceExpiry}" class="rakBpFieldLabel" />
+                                <Text text="{view>/contractorResult/tradeLicenceExpiry}" class="rakBpFieldValue" />
+                            </VBox>
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4RegistrationExpiry}" class="rakBpFieldLabel" />
+                                <Text text="{view>/contractorResult/registrationExpiry}" class="rakBpFieldValue" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Divider -->
+                    <core:HTML content="&lt;div class='rakStep4Divider'&gt;&lt;/div&gt;" />
+
+                    <!-- â”€â”€ EWE CONSULTANT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+                    <VBox class="rakStep4BpSection">
+                        <!-- EWE section header -->
+                        <HBox class="rakStep4BpSectionHead" alignItems="Center">
+                            <HBox alignItems="Center" style="flex:1">
+                                <Title text="{i18n>step4SectionEwe}" level="H3" class="rakStep4Subtitle" />
+                                <core:HTML content="&lt;span style='color:#bf1313;font-size:14px;font-weight:600;margin-left:2px'&gt;*&lt;/span&gt;" />
+                            </HBox>
+                            <!-- Resume Search: visible when EWE found -->
+                            <HBox id="hbxResumeEwe"
+                                  visible="{view>/eweResultVisible}"
+                                  class="rakResumeSearch"
+                                  alignItems="Center">
+                                <core:Icon src="sap-icon://synchronize" />
+                                <Link text="{i18n>step4ResumeSearch}" press=".onResumeEweSearch" />
+                            </HBox>
+                        </HBox>
+
+                        <!-- EWE search form (visible when no EWE yet) -->
+                        <VBox id="vbxEweSearch" visible="{view>/eweSearchVisible}">
+                            <HBox class="rakEweSearch">
+                                <VBox class="rakFormField">
+                                    <Label text="{i18n>step4LabelConsultantSearch}" class="rakFormLabel rakFormLabel--required" />
+                                    <Input id="inpEweSearch"
+                                           value="{view>/eweSearchValue}"
+                                           placeholder="{i18n>step4PlaceholderSearch}"
+                                           enabled="{view>/eweSearchEnabled}"
+                                           class="rakFormInput rakFormInput--full"
+                                           submit=".onSearchEwe" />
+                                </VBox>
+                                <VBox style="flex:0 0 auto;align-self:flex-end">
+                                    <Button id="btnSearchEwe"
+                                            text="{i18n>step4ActionSearch}"
+                                            press=".onSearchEwe"
+                                            type="Emphasized"
+                                            enabled="{view>/eweSearchEnabled}"
+                                            class="rakFindBtn" />
+                                </VBox>
+                            </HBox>
+                            <!-- Same as Applicant: only when applicantAvailableInEwe -->
+                            <CheckBox id="cbxSameAsApplicant"
+                                      text="{i18n>step4EweSameAsApplicant}"
+                                      selected="{view>/eweSameAsApplicant}"
+                                      visible="{view>/applicantAvailableInEwe}"
+                                      select=".onEweSameAsApplicantChange"
+                                      class="rakSameAsApplicant" />
+                            <!-- EWE search error -->
+                            <MessageStrip id="msEweError"
+                                          text="{view>/eweSearchError}"
+                                          type="Error"
+                                          showCloseButton="false"
+                                          visible="{= !!${view>/eweSearchError} }"
+                                          class="rakErrorStrip" />
+                            <!-- EWE search results list -->
+                            <List id="lstEweResults"
+                                  visible="{= ${view>/eweResults}.length > 0 }"
+                                  items="{view>/eweResults}"
+                                  class="rakProjectList"
+                                  mode="None">
+                                <StandardListItem title="{view>name}"
+                                                  description="{view>licenceNo}"
+                                                  type="Active"
+                                                  press=".onEweResultSelected" />
+                            </List>
+                        </VBox>
+
+                        <!-- EWE result (visible when consultant selected) -->
+                        <HBox id="hbxEweResult"
+                              visible="{view>/eweResultVisible}"
+                              class="rakEweResult">
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4EweConsultantLabel}" class="rakBpFieldLabel" />
+                                <Text text="{view>/eweResult/name}" class="rakBpFieldValue" />
+                            </VBox>
+                            <VBox class="rakBpField">
+                                <Label text="{i18n>step4EweLicenceNo}" class="rakBpFieldLabel" />
+                                <Text text="{view>/eweResult/licenceNo}" class="rakBpFieldValue" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Validation errors for EWE (shown on Next attempt) -->
+                        <Text id="txtEweError"
+                              text="{view>/validationErrors/eweConsultant}"
+                              class="rakFormError"
+                              visible="{= !!${view>/validationErrors/eweConsultant} }" />
+                    </VBox>
+
+                    <!-- Engineer validation errors (shown on Next attempt) -->
+                    <Text id="txtArchError"
+                          text="{view>/validationErrors/architect}"
+                          class="rakFormError"
+                          visible="{= !!${view>/validationErrors/architect} }" />
+                    <Text id="txtStrError"
+                          text="{view>/validationErrors/structural}"
+                          class="rakFormError"
+                          visible="{= !!${view>/validationErrors/structural} }" />
+
+                </VBox>
+                <!-- end main card -->
+
+                <!-- bottom spacer -->
+                <core:HTML content="&lt;div style='height:32px'&gt;&lt;/div&gt;" />
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

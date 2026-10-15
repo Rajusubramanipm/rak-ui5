@@ -1,0 +1,106 @@
+{
+  "civilDefenceAreas": [
+    { "key": "",       "text": "Select"                },
+    { "key": "CDA-01", "text": "Ras Al Khaimah City"  },
+    { "key": "CDA-02", "text": "Al Jazirah Al Hamra"  },
+    { "key": "CDA-03", "text": "Khatt"                },
+    { "key": "CDA-04", "text": "Al Nakheel"           },
+    { "key": "CDA-05", "text": "Digdaga"              },
+    { "key": "CDA-06", "text": "Sha'am"               },
+    { "key": "CDA-07", "text": "Al Rams"              },
+    { "key": "CDA-08", "text": "Ghalilah"             },
+    { "key": "CDA-09", "text": "Wadi Qor"             }
+  ],
+  "grantTypes": [
+    { "key": "",      "text": "Select"                         },
+    { "key": "GT-01", "text": "Sheikh Zayed Housing Programme" },
+    { "key": "GT-02", "text": "RAK Housing Authority Grant"    },
+    { "key": "GT-03", "text": "Federal Housing Authority"      },
+    { "key": "GT-04", "text": "Ministry of Infrastructure"     },
+    { "key": "GT-05", "text": "Social Support Grant"           },
+    { "key": "GT-06", "text": "Other Government Grant"         }
+  ],
+  "buildingTypes": [
+    { "key": "",      "text": "Select"               },
+    { "key": "BT-01", "text": "Industrial Building"  },
+    { "key": "BT-02", "text": "Investment Villa"     },
+    { "key": "BT-03", "text": "Multi-Storey Building"},
+    { "key": "BT-04", "text": "Private Villa"        },
+    { "key": "BT-05", "text": "Public Building"      },
+    { "key": "BT-06", "text": "Service Block"        },
+    { "key": "BT-07", "text": "Story Building"       }
+  ],
+  "usageTypesMap": {
+    "10BU": [
+      { "key": "UT-I1", "text": "Factory"           },
+      { "key": "UT-I2", "text": "Warehouse"         },
+      { "key": "UT-I3", "text": "Workshop"          },
+      { "key": "UT-I4", "text": "Car Services"      }
+    ],
+    "10SU": [
+      { "key": "UT-V1", "text": "Villa"                  },
+      { "key": "UT-V2", "text": "Staff Accommodation"    }
+    ],
+    "BT-03": [
+      { "key": "UT-C1", "text": "Apartments"   },
+      { "key": "UT-C2", "text": "Office"       },
+      { "key": "UT-C3", "text": "Retail"       },
+      { "key": "UT-C4", "text": "Hotel"        }
+    ],
+    "BT-04": [
+      { "key": "UT-V1", "text": "Villa"               },
+      { "key": "UT-V2", "text": "Staff Accommodation" }
+    ],
+    "BT-05": [
+      { "key": "UT-E1", "text": "School"            },
+      { "key": "UT-E2", "text": "Hospital"          },
+      { "key": "UT-E3", "text": "Mosque"            },
+      { "key": "UT-E4", "text": "Government Office" }
+    ],
+    "BT-06": [
+      { "key": "UT-S1", "text": "Service Station"      },
+      { "key": "UT-S2", "text": "Maintenance Workshop" },
+      { "key": "UT-S3", "text": "Storage"             }
+    ],
+    "BT-07": [
+      { "key": "UT-C1", "text": "Apartments" },
+      { "key": "UT-C2", "text": "Office"     },
+      { "key": "UT-C3", "text": "Retail"     }
+    ]
+  },
+  "buildingShapes": [
+    { "key": "",      "text": "Select"     },
+    { "key": "BS-01", "text": "Regular"   },
+    { "key": "BS-02", "text": "Irregular" }
+  ],
+  "foundationTypes": [
+    { "key": "",      "text": "Select"               },
+    { "key": "FT-01", "text": "Isolated Foundation"  },
+    { "key": "FT-02", "text": "Pile Foundation"      },
+    { "key": "FT-03", "text": "Raft Foundation"      },
+    { "key": "FT-04", "text": "Strip Foundation"     }
+  ],
+  "slabSystems": [
+    { "key": "",      "text": "Select"                   },
+    { "key": "SS-01", "text": "Other"                    },
+    { "key": "SS-02", "text": "Post-Tensioned (PT)"      },
+    { "key": "SS-03", "text": "Reinforced Concrete (RC)" },
+    { "key": "SS-04", "text": "Steel"                    }
+  ],
+  "fenceTypes": [
+    { "key": "",      "text": "Select"                                                    },
+    { "key": "FW-01", "text": "Boundary Wall (Reinforced Concrete & Concrete Blocks)"     },
+    { "key": "FW-02", "text": "Metal Fence (Metal Chain-link, rods and columns)"          },
+    { "key": "FW-03", "text": "Retaining Wall (Reinforced Concrete Wall)"                 }
+  ],
+  "specialities": [
+    { "key": "ARCHITECT",  "text": "Architect"  },
+    { "key": "ELECTRICAL", "text": "Electrical" },
+    { "key": "MECHANICAL", "text": "Mechanical" },
+    { "key": "STRUCTURAL", "text": "Structural" }
+  ],
+  "contractorIdentificationTypes": [
+    { "key": "CONTRACTOR_NAME", "text": "Contractor Name" },
+    { "key": "TRADE_LICENSE",   "text": "Trade Licence"   }
+  ]
+}

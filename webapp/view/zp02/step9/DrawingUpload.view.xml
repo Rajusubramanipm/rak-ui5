@@ -1,0 +1,474 @@
+<mvc:View
+    controllerName="rak.services.controller.zp02.step9.DrawingUpload"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:unified="sap.ui.unified">
+
+    <Page id="drawingUploadPage" enableScrolling="true" class="rakPage rakApp zp02Frame">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <VBox class="sapUiMediumMarginBeginEnd sapUiSmallMarginTop">
+
+            <!-- â”€â”€ Context header "Uploading Documents" â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <HBox class="rakDUContextHeader sapUiSmallMarginBottom" alignItems="Center">
+                <core:Icon src="sap-icon://upload" size="1.25rem"
+                           color="#10233e"
+                           class="sapUiSmallMarginEnd rakDUContextIcon" />
+                <Title text="{i18n>step9ContextTitle}" level="H3" class="rakDUContextTitle" />
+            </HBox>
+
+            <!-- â”€â”€ Context info section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <VBox class="rakDUContextInfo sapUiSmallMarginBottom">
+                <HBox alignItems="Center" class="rakDURequestRow sapUiTinyMarginBottom">
+                    <Text text="{i18n>step9LabelRequest}" class="rakDUInfoLabel sapUiSmallMarginEnd" />
+                    <Text text="{view>/requestId}" class="rakDUInfoValue" />
+                </HBox>
+                <Title text="{i18n>step9SubheadingGeneralInfo}"
+                       level="H5"
+                       class="rakDUSubheading sapUiTinyMarginBottom" />
+                <HBox wrap="Wrap" class="rakDUChipRow">
+                    <VBox class="rakDUChip sapUiSmallMarginEnd sapUiTinyMarginBottom">
+                        <Text text="{i18n>step9ChipBuilding}" class="rakDUChipLabel" />
+                        <Text text="{view>/buildingIdsText}" class="rakDUChipValue" />
+                    </VBox>
+                    <VBox class="rakDUChip sapUiSmallMarginEnd sapUiTinyMarginBottom">
+                        <Text text="{i18n>step9ChipParcelId}" class="rakDUChipLabel" />
+                        <Text text="{view>/parcelId}" class="rakDUChipValue" />
+                    </VBox>
+                    <VBox class="rakDUChip sapUiTinyMarginBottom">
+                        <Text text="{i18n>step9ChipBizPartner}" class="rakDUChipLabel" />
+                        <Text text="{view>/ownerName}" class="rakDUChipValue" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- â”€â”€ Divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <core:HTML content="&lt;hr class='rakDUDivider' /&gt;" />
+
+            <!-- â”€â”€ Section heading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <HBox alignItems="Center" class="sapUiSmallMarginTop sapUiTinyMarginBottom">
+                <Title text="{i18n>step9SectionHeading}" level="H4" class="rakDUSectionHeading" />
+                <core:HTML content="&lt;span class='rakDURequiredAsterisk'&gt;*&lt;/span&gt;" />
+            </HBox>
+
+            <!-- â”€â”€ Download guide link â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <HBox alignItems="Center" class="rakDUGuideRow sapUiSmallMarginBottom">
+                <core:Icon src="sap-icon://download" size="1rem"
+                           color="#10233e"
+                           class="sapUiTinyMarginEnd" />
+                <Link text="{i18n>step9DownloadGuide}" press=".onDownloadGuide"
+                      class="rakDUGuideLink" />
+            </HBox>
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+                 PANEL 1 â€” Upload Drawings
+                 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <Panel id="panelDrawings"
+                   expandable="true"
+                   expanded="true"
+                   class="rakDUGroupPanel sapUiSmallMarginBottom">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>step9GroupDrawings}" class="rakDUPanelTitle" />
+                        <ToolbarSpacer />
+                        <ObjectStatus
+                            text="{i18n>step9StatusSaved}"
+                            state="Success"
+                            visible="{= ${view>/groups/drawings/status} === 'SAVED' }"
+                            class="rakDUStatusBadge" />
+                        <ObjectStatus
+                            text="{i18n>step9StatusSubmitted}"
+                            state="Success"
+                            icon="sap-icon://accept"
+                            visible="{= ${view>/groups/drawings/status} === 'SUBMITTED' }"
+                            class="rakDUStatusBadge" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <VBox class="rakDUGroupContent">
+                    <!-- Dept note -->
+                    <VBox class="rakDUDeptNoteRow sapUiTinyMarginBottom">
+                        <Text text="{i18n>step9LabelDeptNote}" class="rakDUNoteLabel" />
+                        <Text text="{view>/deptNotes/drawings}" class="rakDUNoteValue" wrapping="true" />
+                    </VBox>
+                    <!-- Comment -->
+                    <VBox class="sapUiSmallMarginBottom">
+                        <Text text="{i18n>step9LabelComment}" class="rakFormLabel sapUiTinyMarginBottom" />
+                        <TextArea
+                            value="{view>/groups/drawings/comment}"
+                            placeholder="{i18n>step9PlaceholderComment}"
+                            rows="2"
+                            enabled="{= ${view>/groups/drawings/status} !== 'SUBMITTED' }"
+                            class="rakDUCommentArea" />
+                    </VBox>
+                    <!-- File list -->
+                    <List id="fileListDrawings"
+                          items="{view>/groups/drawings/files}"
+                          showSeparators="None"
+                          class="rakDUFileList sapUiNoMargin">
+                        <CustomListItem class="rakDUFileListItem">
+                            <VBox class="rakDUFileItem">
+                                <!-- IDLE / ERROR: show file uploader -->
+                                <HBox alignItems="Center"
+                                      visible="{= ${view>uploadState} === 'IDLE' || ${view>uploadState} === 'ERROR' }">
+                                    <unified:FileUploader
+                                        fileType="pdf,dwg,dxf"
+                                        maximumFileSize="10"
+                                        buttonOnly="false"
+                                        buttonText="{i18n>step9ActionChooseFile}"
+                                        change=".onFileChange"
+                                        typeMissmatch=".onFileTypeMismatch"
+                                        fileSizeExceed=".onFileSizeExceed"
+                                        class="rakDUFileUploader" />
+                                </HBox>
+                                <!-- UPLOADING: progress bar -->
+                                <HBox alignItems="Center"
+                                      class="rakDUProgressRow"
+                                      visible="{= ${view>uploadState} === 'UPLOADING' }">
+                                    <ProgressIndicator
+                                        percentValue="{view>uploadProgress}"
+                                        displayValue="{= ${view>uploadProgress} + '%' }"
+                                        showValue="true"
+                                        state="Information"
+                                        width="240px"
+                                        class="sapUiSmallMarginEnd" />
+                                    <Text text="{i18n>step5LabelUploading}" class="rakDUProgressLabel" />
+                                </HBox>
+                                <!-- UPLOADED: filename + remove -->
+                                <HBox alignItems="Center"
+                                      visible="{= ${view>uploadState} === 'UPLOADED' }">
+                                    <core:Icon src="sap-icon://attachment" size="0.875rem"
+                                               color="#10233e"
+                                               class="sapUiTinyMarginEnd" />
+                                    <Text text="{view>fileMeta/fileName}"
+                                          class="rakDUFileName sapUiSmallMarginEnd" />
+                                    <Button
+                                        icon="sap-icon://decline"
+                                        type="Transparent"
+                                        press=".onRemoveFile"
+                                        enabled="{= ${view>/groups/drawings/status} !== 'SUBMITTED' }"
+                                        class="rakDURemoveBtn" />
+                                </HBox>
+                                <!-- Error text -->
+                                <Text text="{view>uploadError}"
+                                      visible="{= !!${view>uploadError} }"
+                                      class="rakDUFileError" />
+                            </VBox>
+                        </CustomListItem>
+                    </List>
+                    <!-- Add file link -->
+                    <Button
+                        icon="sap-icon://add"
+                        text="{i18n>step9ActionAddFile}"
+                        type="Transparent"
+                        press=".onAddFile"
+                        enabled="{= ${view>/groups/drawings/status} !== 'SUBMITTED' }"
+                        class="rakDUAddFileBtn sapUiTinyMarginBottom">
+                        <customData>
+                            <core:CustomData key="groupKey" value="drawings" />
+                        </customData>
+                    </Button>
+                    <!-- Action row -->
+                    <HBox justifyContent="End" class="rakDUActions">
+                        <Button
+                            icon="sap-icon://save"
+                            text="{i18n>step9ActionSave}"
+                            press=".onSaveGroup"
+                            enabled="{= ${view>/groups/drawings/status} !== 'SUBMITTED' }"
+                            class="rakDUSaveBtn sapUiSmallMarginEnd">
+                            <customData>
+                                <core:CustomData key="groupKey" value="drawings" />
+                            </customData>
+                        </Button>
+                        <Button
+                            text="{i18n>step9ActionSubmit}"
+                            type="Emphasized"
+                            press=".onSubmitGroup"
+                            enabled="{= ${view>/groups/drawings/status} !== 'SUBMITTED' }"
+                            class="rakBtnPrimary rakDUSubmitBtn">
+                            <customData>
+                                <core:CustomData key="groupKey" value="drawings" />
+                            </customData>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </Panel>
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+                 PANEL 2 â€” Upload Barjeel Files
+                 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <Panel id="panelBarjeel"
+                   expandable="true"
+                   expanded="false"
+                   class="rakDUGroupPanel sapUiSmallMarginBottom">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>step9GroupBarjeel}" class="rakDUPanelTitle" />
+                        <ToolbarSpacer />
+                        <ObjectStatus
+                            text="{i18n>step9StatusSaved}"
+                            state="Success"
+                            visible="{= ${view>/groups/barjeel/status} === 'SAVED' }"
+                            class="rakDUStatusBadge" />
+                        <ObjectStatus
+                            text="{i18n>step9StatusSubmitted}"
+                            state="Success"
+                            icon="sap-icon://accept"
+                            visible="{= ${view>/groups/barjeel/status} === 'SUBMITTED' }"
+                            class="rakDUStatusBadge" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <VBox class="rakDUGroupContent">
+                    <VBox class="rakDUDeptNoteRow sapUiTinyMarginBottom">
+                        <Text text="{i18n>step9LabelDeptNote}" class="rakDUNoteLabel" />
+                        <Text text="{view>/deptNotes/barjeel}" class="rakDUNoteValue" wrapping="true" />
+                    </VBox>
+                    <VBox class="sapUiSmallMarginBottom">
+                        <Text text="{i18n>step9LabelComment}" class="rakFormLabel sapUiTinyMarginBottom" />
+                        <TextArea
+                            value="{view>/groups/barjeel/comment}"
+                            placeholder="{i18n>step9PlaceholderComment}"
+                            rows="2"
+                            enabled="{= ${view>/groups/barjeel/status} !== 'SUBMITTED' }"
+                            class="rakDUCommentArea" />
+                    </VBox>
+                    <List id="fileListBarjeel"
+                          items="{view>/groups/barjeel/files}"
+                          showSeparators="None"
+                          class="rakDUFileList sapUiNoMargin">
+                        <CustomListItem class="rakDUFileListItem">
+                            <VBox class="rakDUFileItem">
+                                <HBox alignItems="Center"
+                                      visible="{= ${view>uploadState} === 'IDLE' || ${view>uploadState} === 'ERROR' }">
+                                    <unified:FileUploader
+                                        fileType="pdf,dwg,dxf"
+                                        maximumFileSize="10"
+                                        buttonOnly="false"
+                                        buttonText="{i18n>step9ActionChooseFile}"
+                                        change=".onFileChange"
+                                        typeMissmatch=".onFileTypeMismatch"
+                                        fileSizeExceed=".onFileSizeExceed"
+                                        class="rakDUFileUploader" />
+                                </HBox>
+                                <HBox alignItems="Center"
+                                      class="rakDUProgressRow"
+                                      visible="{= ${view>uploadState} === 'UPLOADING' }">
+                                    <ProgressIndicator
+                                        percentValue="{view>uploadProgress}"
+                                        displayValue="{= ${view>uploadProgress} + '%' }"
+                                        showValue="true"
+                                        state="Information"
+                                        width="240px"
+                                        class="sapUiSmallMarginEnd" />
+                                    <Text text="{i18n>step5LabelUploading}" class="rakDUProgressLabel" />
+                                </HBox>
+                                <HBox alignItems="Center"
+                                      visible="{= ${view>uploadState} === 'UPLOADED' }">
+                                    <core:Icon src="sap-icon://attachment" size="0.875rem"
+                                               color="#10233e"
+                                               class="sapUiTinyMarginEnd" />
+                                    <Text text="{view>fileMeta/fileName}"
+                                          class="rakDUFileName sapUiSmallMarginEnd" />
+                                    <Button
+                                        icon="sap-icon://decline"
+                                        type="Transparent"
+                                        press=".onRemoveFile"
+                                        enabled="{= ${view>/groups/barjeel/status} !== 'SUBMITTED' }"
+                                        class="rakDURemoveBtn" />
+                                </HBox>
+                                <Text text="{view>uploadError}"
+                                      visible="{= !!${view>uploadError} }"
+                                      class="rakDUFileError" />
+                            </VBox>
+                        </CustomListItem>
+                    </List>
+                    <Button
+                        icon="sap-icon://add"
+                        text="{i18n>step9ActionAddFile}"
+                        type="Transparent"
+                        press=".onAddFile"
+                        enabled="{= ${view>/groups/barjeel/status} !== 'SUBMITTED' }"
+                        class="rakDUAddFileBtn sapUiTinyMarginBottom">
+                        <customData>
+                            <core:CustomData key="groupKey" value="barjeel" />
+                        </customData>
+                    </Button>
+                    <HBox justifyContent="End" class="rakDUActions">
+                        <Button
+                            icon="sap-icon://save"
+                            text="{i18n>step9ActionSave}"
+                            press=".onSaveGroup"
+                            enabled="{= ${view>/groups/barjeel/status} !== 'SUBMITTED' }"
+                            class="rakDUSaveBtn sapUiSmallMarginEnd">
+                            <customData>
+                                <core:CustomData key="groupKey" value="barjeel" />
+                            </customData>
+                        </Button>
+                        <Button
+                            text="{i18n>step9ActionSubmit}"
+                            type="Emphasized"
+                            press=".onSubmitGroup"
+                            enabled="{= ${view>/groups/barjeel/status} !== 'SUBMITTED' }"
+                            class="rakBtnPrimary rakDUSubmitBtn">
+                            <customData>
+                                <core:CustomData key="groupKey" value="barjeel" />
+                            </customData>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </Panel>
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+                 PANEL 3 â€” Upload Structural Drawings
+                 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <Panel id="panelStructural"
+                   expandable="true"
+                   expanded="false"
+                   class="rakDUGroupPanel sapUiSmallMarginBottom">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>step9GroupStructural}" class="rakDUPanelTitle" />
+                        <ToolbarSpacer />
+                        <ObjectStatus
+                            text="{i18n>step9StatusSaved}"
+                            state="Success"
+                            visible="{= ${view>/groups/structural/status} === 'SAVED' }"
+                            class="rakDUStatusBadge" />
+                        <ObjectStatus
+                            text="{i18n>step9StatusSubmitted}"
+                            state="Success"
+                            icon="sap-icon://accept"
+                            visible="{= ${view>/groups/structural/status} === 'SUBMITTED' }"
+                            class="rakDUStatusBadge" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <VBox class="rakDUGroupContent">
+                    <VBox class="rakDUDeptNoteRow sapUiTinyMarginBottom">
+                        <Text text="{i18n>step9LabelDeptNote}" class="rakDUNoteLabel" />
+                        <Text text="{view>/deptNotes/structural}" class="rakDUNoteValue" wrapping="true" />
+                    </VBox>
+                    <VBox class="sapUiSmallMarginBottom">
+                        <Text text="{i18n>step9LabelComment}" class="rakFormLabel sapUiTinyMarginBottom" />
+                        <TextArea
+                            value="{view>/groups/structural/comment}"
+                            placeholder="{i18n>step9PlaceholderComment}"
+                            rows="2"
+                            enabled="{= ${view>/groups/structural/status} !== 'SUBMITTED' }"
+                            class="rakDUCommentArea" />
+                    </VBox>
+                    <List id="fileListStructural"
+                          items="{view>/groups/structural/files}"
+                          showSeparators="None"
+                          class="rakDUFileList sapUiNoMargin">
+                        <CustomListItem class="rakDUFileListItem">
+                            <VBox class="rakDUFileItem">
+                                <HBox alignItems="Center"
+                                      visible="{= ${view>uploadState} === 'IDLE' || ${view>uploadState} === 'ERROR' }">
+                                    <unified:FileUploader
+                                        fileType="pdf,dwg,dxf"
+                                        maximumFileSize="10"
+                                        buttonOnly="false"
+                                        buttonText="{i18n>step9ActionChooseFile}"
+                                        change=".onFileChange"
+                                        typeMissmatch=".onFileTypeMismatch"
+                                        fileSizeExceed=".onFileSizeExceed"
+                                        class="rakDUFileUploader" />
+                                </HBox>
+                                <HBox alignItems="Center"
+                                      class="rakDUProgressRow"
+                                      visible="{= ${view>uploadState} === 'UPLOADING' }">
+                                    <ProgressIndicator
+                                        percentValue="{view>uploadProgress}"
+                                        displayValue="{= ${view>uploadProgress} + '%' }"
+                                        showValue="true"
+                                        state="Information"
+                                        width="240px"
+                                        class="sapUiSmallMarginEnd" />
+                                    <Text text="{i18n>step5LabelUploading}" class="rakDUProgressLabel" />
+                                </HBox>
+                                <HBox alignItems="Center"
+                                      visible="{= ${view>uploadState} === 'UPLOADED' }">
+                                    <core:Icon src="sap-icon://attachment" size="0.875rem"
+                                               color="#10233e"
+                                               class="sapUiTinyMarginEnd" />
+                                    <Text text="{view>fileMeta/fileName}"
+                                          class="rakDUFileName sapUiSmallMarginEnd" />
+                                    <Button
+                                        icon="sap-icon://decline"
+                                        type="Transparent"
+                                        press=".onRemoveFile"
+                                        enabled="{= ${view>/groups/structural/status} !== 'SUBMITTED' }"
+                                        class="rakDURemoveBtn" />
+                                </HBox>
+                                <Text text="{view>uploadError}"
+                                      visible="{= !!${view>uploadError} }"
+                                      class="rakDUFileError" />
+                            </VBox>
+                        </CustomListItem>
+                    </List>
+                    <Button
+                        icon="sap-icon://add"
+                        text="{i18n>step9ActionAddFile}"
+                        type="Transparent"
+                        press=".onAddFile"
+                        enabled="{= ${view>/groups/structural/status} !== 'SUBMITTED' }"
+                        class="rakDUAddFileBtn sapUiTinyMarginBottom">
+                        <customData>
+                            <core:CustomData key="groupKey" value="structural" />
+                        </customData>
+                    </Button>
+                    <HBox justifyContent="End" class="rakDUActions">
+                        <Button
+                            icon="sap-icon://save"
+                            text="{i18n>step9ActionSave}"
+                            press=".onSaveGroup"
+                            enabled="{= ${view>/groups/structural/status} !== 'SUBMITTED' }"
+                            class="rakDUSaveBtn sapUiSmallMarginEnd">
+                            <customData>
+                                <core:CustomData key="groupKey" value="structural" />
+                            </customData>
+                        </Button>
+                        <Button
+                            text="{i18n>step9ActionSubmit}"
+                            type="Emphasized"
+                            press=".onSubmitGroup"
+                            enabled="{= ${view>/groups/structural/status} !== 'SUBMITTED' }"
+                            class="rakBtnPrimary rakDUSubmitBtn">
+                            <customData>
+                                <core:CustomData key="groupKey" value="structural" />
+                            </customData>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </Panel>
+
+            <!-- â”€â”€ Back to Confirmation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <HBox class="rakDUFooterRow sapUiMediumMarginTop sapUiMediumMarginBottom">
+                <Button text="{i18n>step9BackToConfirmation}"
+                        press=".onBackToConfirmation"
+                        class="rakBackBtn" />
+            </HBox>
+
+        </VBox>
+
+    </Page>
+
+</mvc:View>

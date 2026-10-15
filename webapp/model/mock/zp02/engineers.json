@@ -1,0 +1,10 @@
+[
+  { "engineerId": "ENG001", "name": "Solaiman Mariam Hafez Khamees Al-Ayyat", "specialityKey": "ARCHITECT",  "mobile": "971 50 0000000" },
+  { "engineerId": "ENG002", "name": "Fatima Rashid Al-Mansoori",               "specialityKey": "STRUCTURAL", "mobile": "971 55 1234567" },
+  { "engineerId": "ENG003", "name": "Ahmed Hassan Al-Zaabi",                   "specialityKey": "MECHANICAL", "mobile": "971 56 2345678" },
+  { "engineerId": "ENG004", "name": "Sara Khalid Al-Mazrouei",                 "specialityKey": "ELECTRICAL", "mobile": "971 50 3456789" },
+  { "engineerId": "ENG005", "name": "Khalid Yousef Al-Nuaimi",                 "specialityKey": "ARCHITECT",  "mobile": "971 55 4567890" },
+  { "engineerId": "ENG006", "name": "Maryam Juma Al-Shamsi",                   "specialityKey": "STRUCTURAL", "mobile": "971 56 5678901" },
+  { "engineerId": "ENG007", "name": "Omar Saeed Al-Rashidi",                   "specialityKey": "MECHANICAL", "mobile": "971 50 6789012" },
+  { "engineerId": "ENG008", "name": "Noura Abdullah Al-Khatri",                "specialityKey": "ELECTRICAL", "mobile": "971 55 7890123" }
+]

@@ -1,0 +1,8 @@
+{
+  "currency": "AED",
+  "items": [],
+  "paymentRequired": false,
+  "meta": {
+    "note": "Shell mock only — payment is conditional after review/submit for Phase 1 foundation"
+  }
+}

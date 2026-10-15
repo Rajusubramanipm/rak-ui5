@@ -1,0 +1,577 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:rak="rak.services.control"
+    controllerName="rak.services.controller.zp02.step3.FencesBuildings"
+    displayBlock="true">
+
+    <Page id="pageStep3" enableScrolling="true" class="rakPage rakApp zp02Step3 zp02Frame">
+
+        <!-- RAK Application Header -->
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <!-- Footer: Back + Next -->
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button id="btnBack" text="{i18n>actionBack}" icon="sap-icon://navigation-left-arrow" press=".onBack" type="Transparent" class="rakBackBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button id="btnNext" text="{i18n>actionNext}" icon="sap-icon://navigation-right-arrow" iconFirst="false" press=".onNext" type="Emphasized" class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+        <!-- Add / Edit Building dialog — Figma "Add a Building popup DML" 136:9241 / 136:9236.
+             Functional flow keeps its 3 stages (General Information, Floor Composition,
+             Structural Details); the Figma DML shows 2. -->
+        <dependents>
+            <Dialog id="addBuildingDlg"
+                    title="{view>/dialog/title}"
+                    contentWidth="1000px"
+                    contentHeight="430px"
+                    draggable="false"
+                    resizable="false"
+                    verticalScrolling="true"
+                    horizontalScrolling="false"
+                    afterOpen=".onBuildingDialogAfterOpen"
+                    class="rakDlg zp02BuildingDialog">
+
+                <customHeader>
+                    <Bar class="zp02DlgHeader">
+                        <contentLeft>
+                            <Title text="{view>/dialog/title}" level="H2" class="zp02DlgTitle" />
+                        </contentLeft>
+                        <contentRight>
+                            <Button id="dlgBtnCancel"
+                                    icon="assets/figma/zp02/step3/icon-close-24.svg"
+                                    tooltip="{i18n>step3ActionClose}"
+                                    press=".onDialogCancel"
+                                    type="Transparent"
+                                    class="zp02DlgClose" />
+                        </contentRight>
+                    </Bar>
+                </customHeader>
+
+                <!-- Modal stepper -->
+                <subHeader>
+                    <Toolbar class="zp02ModalStepper" design="Transparent" height="auto">
+                        <HBox renderType="Bare" class="zp02MStep" alignItems="Center">
+                            <customData>
+                                <core:CustomData key="zp02-state" writeToDom="true"
+                                    value="{= ${view>/dialog/currentStep} > 1 ? 'done' : 'active' }" />
+                            </customData>
+                            <Text text="1" class="zp02MStep__num" />
+                            <Text text="{i18n>step3ModalStepGeneral}" class="zp02MStep__label" />
+                        </HBox>
+                        <core:HTML content="&lt;span class='zp02MStep__line' aria-hidden='true'&gt;&lt;/span&gt;" />
+                        <HBox renderType="Bare" class="zp02MStep" alignItems="Center">
+                            <customData>
+                                <core:CustomData key="zp02-state" writeToDom="true"
+                                    value="{= ${view>/dialog/currentStep} > 2 ? 'done' : (${view>/dialog/currentStep} === 2 ? 'active' : 'todo') }" />
+                            </customData>
+                            <Text text="2" class="zp02MStep__num" />
+                            <Text text="{i18n>step3ModalStepFloors}" class="zp02MStep__label" />
+                        </HBox>
+                        <core:HTML content="&lt;span class='zp02MStep__line' aria-hidden='true'&gt;&lt;/span&gt;" />
+                        <HBox renderType="Bare" class="zp02MStep" alignItems="Center">
+                            <customData>
+                                <core:CustomData key="zp02-state" writeToDom="true"
+                                    value="{= ${view>/dialog/currentStep} === 3 ? 'active' : 'todo' }" />
+                            </customData>
+                            <Text text="3" class="zp02MStep__num" />
+                            <Text text="{i18n>step3ModalStepStructural}" class="zp02MStep__label" />
+                        </HBox>
+                    </Toolbar>
+                </subHeader>
+
+                <content>
+
+                    <!-- STAGE 1: General Information -->
+                    <VBox id="dlgStep1" visible="{= ${view>/dialog/currentStep} === 1 }" class="rakDlgStepContent zp02DlgBody">
+                        <HBox renderType="Bare" class="zp02DlgRow">
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelBuildingType}" class="rakFormLabel rakFormLabel--required" labelFor="selBuildingType" />
+                                <Select id="selBuildingType"
+                                        selectedKey="{view>/dialog/draft/buildingTypeCode}"
+                                        items="{view>/buildingTypes}"
+                                        change=".onBuildingTypeChange"
+                                        valueState="{= ${view>/dialog/errors/buildingType} ? 'Error' : 'None' }"
+                                        valueStateText="{view>/dialog/errors/buildingType}"
+                                        class="rakFormSelect zp02FieldControl">
+                                    <core:Item key="{view>key}" text="{view>text}" />
+                                    <customData>
+                                        <core:CustomData key="zp02-empty" writeToDom="true" value="{= ${view>/dialog/draft/buildingTypeCode} ? 'false' : 'true' }" />
+                                    </customData>
+                                </Select>
+                                <Text text="{view>/dialog/errors/buildingType}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/dialog/errors/buildingType} }" />
+                            </VBox>
+
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol zp02DlgCol--wide">
+                                <Label text="{i18n>step3LabelUsageType}" class="rakFormLabel rakFormLabel--required" labelFor="mcbUsageType" />
+                                <MultiComboBox id="mcbUsageType"
+                                               selectedKeys="{view>/dialog/draft/usageTypeKeys}"
+                                               enabled="{view>/dialog/usageTypeEnabled}"
+                                               placeholder="{i18n>step3PlaceholderSelect}"
+                                               valueState="{= ${view>/dialog/errors/usageType} ? 'Error' : 'None' }"
+                                               valueStateText="{view>/dialog/errors/usageType}"
+                                               showValueStateMessage="false"
+                                               selectionChange=".onDialogFieldChange"
+                                               class="rakFormInput zp02FieldControl"
+                                               items="{view>/usageTypeOptions}">
+                                    <core:Item key="{view>key}" text="{view>text}" />
+                                </MultiComboBox>
+                                <Text text="{view>/dialog/errors/usageType}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/dialog/errors/usageType} }" />
+                                <Text text="{i18n>step3HelperUsageMulti}" class="zp02Helper" />
+                            </VBox>
+                        </HBox>
+
+                        <HBox renderType="Bare" class="zp02DlgRow">
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <HBox class="rakFormLabelRow" alignItems="Center">
+                                    <Label text="{i18n>step3LabelTypicalBuildings}" class="rakFormLabel rakFormLabel--required" labelFor="stpNumberOfTypical" />
+                                    <Image src="assets/figma/zp02/step2/icon-info-20.svg" width="20px" height="20px"
+                                           class="zp02InfoIcon"
+                                           alt="{i18n>step3TooltipTypicalBuildings}"
+                                           tooltip="{i18n>step3TooltipTypicalBuildings}" />
+                                </HBox>
+                                <StepInput id="stpNumberOfTypical"
+                                           value="{view>/dialog/draft/numberOfTypicalBuildings}"
+                                           min="1" max="99" step="1"
+                                           class="rakStepInput zp02SpinBox"
+                                           change=".onDialogFieldChange" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol zp02DlgCol--wide">
+                                <Label text="{i18n>step3LabelBuildingName}" class="rakFormLabel" labelFor="inpBuildingName" />
+                                <Input id="inpBuildingName"
+                                       value="{view>/dialog/draft/buildingName}"
+                                       class="rakFormInput zp02FieldControl" />
+                                <Text text="{i18n>step3HelperBuildingNameSuffix}" class="zp02Helper" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- STAGE 2: Floor Composition (Figma 136:9236 spin-box grid) -->
+                    <VBox id="dlgStep2" visible="{= ${view>/dialog/currentStep} === 2 }" class="rakDlgStepContent zp02DlgBody">
+                        <HBox renderType="Bare" class="zp02FloorGrid" wrap="Wrap">
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelBasement}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/basement}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelLowerGround}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/lowerGround}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelGroundUpper}" class="rakFormLabel" />
+                                <!-- Fixed value: rendered as Figma's disabled spin box -->
+                                <StepInput value="{view>/dialog/draft/floors/groundUpper}" min="1" max="1" step="1" enabled="false" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelMezzanine}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/mezzanine}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelTypical}" class="rakFormLabel rakFormLabel--required" />
+                                <StepInput id="stpTypical"
+                                           value="{view>/dialog/draft/floors/typical}"
+                                           min="1" max="99" step="1"
+                                           change=".onTypicalFloorsChange"
+                                           class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelUnique}" class="rakFormLabel" />
+                                <StepInput id="stpUnique"
+                                           value="{view>/dialog/draft/floors/unique}"
+                                           min="0" max="{view>/dialog/draft/floors/typical}"
+                                           step="1"
+                                           enabled="{view>/dialog/uniqueEnabled}"
+                                           class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelRoof}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/roof}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelPodium}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/podium}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelPenthouse}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/penthouse}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelHelipads}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/helipads}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelService}" class="rakFormLabel" />
+                                <StepInput value="{view>/dialog/draft/floors/service}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- STAGE 3: Structural Details (not in the DML; same field language) -->
+                    <VBox id="dlgStep3" visible="{= ${view>/dialog/currentStep} === 3 }" class="rakDlgStepContent zp02DlgBody">
+                        <HBox renderType="Bare" class="zp02FloorGrid" wrap="Wrap">
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelBuildingHeight}" class="rakFormLabel rakFormLabel--required" labelFor="inpBuildingHeight" />
+                                <Input id="inpBuildingHeight"
+                                       value="{view>/dialog/draft/structural/buildingHeight}"
+                                       placeholder="0.00"
+                                       class="rakFormInput zp02FieldControl"
+                                       valueState="{= ${view>/dialog/errors/buildingHeight} ? 'Error' : 'None' }"
+                                       valueStateText="{view>/dialog/errors/buildingHeight}"
+                                       showValueStateMessage="false"
+                                       liveChange=".onDialogFieldChange" />
+                                <Text text="{view>/dialog/errors/buildingHeight}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/dialog/errors/buildingHeight} }" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol">
+                                <Label text="{i18n>step3LabelExpansionJoints}" class="rakFormLabel rakFormLabel--required" />
+                                <StepInput value="{view>/dialog/draft/structural/expansionJoints}" min="0" max="99" step="1" class="rakStepInput zp02SpinBox" />
+                            </VBox>
+                        </HBox>
+                        <HBox renderType="Bare" class="zp02FloorGrid" wrap="Wrap">
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol zp02DlgCol--wide">
+                                <Label text="{i18n>step3LabelBuildingShape}" class="rakFormLabel rakFormLabel--required" />
+                                <Select selectedKey="{view>/dialog/draft/structural/buildingShapeCode}"
+                                        items="{view>/buildingShapes}"
+                                        change=".onDialogFieldChange"
+                                        valueState="{= ${view>/dialog/errors/buildingShape} ? 'Error' : 'None' }"
+                                        valueStateText="{view>/dialog/errors/buildingShape}"
+                                        class="rakFormSelect zp02FieldControl">
+                                    <core:Item key="{view>key}" text="{view>text}" />
+                                    <customData>
+                                        <core:CustomData key="zp02-empty" writeToDom="true" value="{= ${view>/dialog/draft/structural/buildingShapeCode} ? 'false' : 'true' }" />
+                                    </customData>
+                                </Select>
+                                <Text text="{view>/dialog/errors/buildingShape}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/dialog/errors/buildingShape} }" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol zp02DlgCol--wide">
+                                <Label text="{i18n>step3LabelFoundationType}" class="rakFormLabel rakFormLabel--required" />
+                                <Select selectedKey="{view>/dialog/draft/structural/foundationTypeCode}"
+                                        items="{view>/foundationTypes}"
+                                        change=".onDialogFieldChange"
+                                        valueState="{= ${view>/dialog/errors/foundationType} ? 'Error' : 'None' }"
+                                        valueStateText="{view>/dialog/errors/foundationType}"
+                                        class="rakFormSelect zp02FieldControl">
+                                    <core:Item key="{view>key}" text="{view>text}" />
+                                    <customData>
+                                        <core:CustomData key="zp02-empty" writeToDom="true" value="{= ${view>/dialog/draft/structural/foundationTypeCode} ? 'false' : 'true' }" />
+                                    </customData>
+                                </Select>
+                                <Text text="{view>/dialog/errors/foundationType}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/dialog/errors/foundationType} }" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02DlgCol zp02DlgCol--wide">
+                                <Label text="{i18n>step3LabelSlabSystem}" class="rakFormLabel rakFormLabel--required" />
+                                <Select selectedKey="{view>/dialog/draft/structural/slabSystemCode}"
+                                        items="{view>/slabSystems}"
+                                        change=".onDialogFieldChange"
+                                        valueState="{= ${view>/dialog/errors/slabSystem} ? 'Error' : 'None' }"
+                                        valueStateText="{view>/dialog/errors/slabSystem}"
+                                        class="rakFormSelect zp02FieldControl">
+                                    <core:Item key="{view>key}" text="{view>text}" />
+                                    <customData>
+                                        <core:CustomData key="zp02-empty" writeToDom="true" value="{= ${view>/dialog/draft/structural/slabSystemCode} ? 'false' : 'true' }" />
+                                    </customData>
+                                </Select>
+                                <Text text="{view>/dialog/errors/slabSystem}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/dialog/errors/slabSystem} }" />
+                            </VBox>
+                        </HBox>
+                        <VBox renderType="Bare" class="zp02Field">
+                            <Label text="{i18n>step3LabelStructuralFeatures}" class="rakFormLabel" />
+                            <VBox renderType="Bare" class="rakCheckboxGroup zp02CheckGroup">
+                                <CheckBox text="{i18n>step3LabelTransferElements}"  selected="{view>/dialog/draft/structural/featTransferElements}" />
+                                <CheckBox text="{i18n>step3LabelFloorNonTypicality}" selected="{view>/dialog/draft/structural/featFloorNonTypicality}" />
+                                <CheckBox text="{i18n>step3LabelFrames}"             selected="{view>/dialog/draft/structural/featFrames}" />
+                                <CheckBox text="{i18n>step3LabelThirdPartyDesign}"  selected="{view>/dialog/draft/structural/featThirdPartyDesign}" />
+                                <CheckBox text="{i18n>step3LabelOutriggers}"         selected="{view>/dialog/draft/structural/featOutriggers}" />
+                            </VBox>
+                        </VBox>
+                    </VBox>
+
+                </content>
+
+                <!-- Figma footer: Back (outline, left) — primary (gradient, right). Close = header ✕ / Esc. -->
+                <footer>
+                    <Toolbar class="zp02DlgFooter">
+                        <Button id="dlgBtnPrev"
+                                text="{i18n>actionBack}"
+                                icon="assets/figma/zp02/step3/icon-arrow-left-20.svg"
+                                press=".onDialogPrevious"
+                                visible="{= ${view>/dialog/currentStep} > 1 }"
+                                class="zp02ModalSecondaryButton" />
+                        <ToolbarSpacer />
+                        <Button id="dlgBtnNext"
+                                text="{i18n>actionNext}"
+                                icon="assets/figma/zp02/step3/icon-arrow-right-20.svg"
+                                iconFirst="false"
+                                press=".onDialogNext"
+                                visible="{= ${view>/dialog/currentStep} &lt; 3 }"
+                                class="zp02ModalPrimaryButton" />
+                        <Button id="dlgBtnSave"
+                                text="{i18n>step3SaveBuilding}"
+                                press=".onDialogSave"
+                                visible="{= ${view>/dialog/currentStep} === 3 }"
+                                class="zp02ModalPrimaryButton" />
+                    </Toolbar>
+                </footer>
+            </Dialog>
+        </dependents>
+
+        <content>
+
+            <!-- Permit heading -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <items>
+                    <HBox alignItems="Center" class="rakPermitHeading__left">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg" width="30px" height="30px" class="rakPermitHeading__icon" alt="New Building Permit" />
+                            <Title text="New Building Permit" titleStyle="H4" class="rakPermitHeading__title" />
+                        </items>
+                    </HBox>
+                    <HBox alignItems="Center" class="rakPermitHeading__actions">
+                        <items>
+                            <Button id="btnSaveDraft" text="{i18n>actionSaveAsDraft}" icon="assets/figma/zp02/step1/icon-20px-b.svg" press=".onSaveAsDraft" type="Transparent" class="rakPermitAction" />
+                            <Button id="btnDelete"    text="{i18n>actionDelete}"      icon="assets/figma/zp02/step1/icon-20px-a.svg" press=".onDelete"      type="Transparent" class="rakPermitAction" />
+                        </items>
+                    </HBox>
+                </items>
+            </HBox>
+
+            <!-- Persistent project context bar (above stepper) -->
+            <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                <items>
+                    <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{view>/project/ownerName}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{view>/project/projectNumber}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{view>/project/address}" class="rakContextBar__value" />
+                </items>
+            </HBox>
+
+            <!-- Stepper: Steps 1+2 completed, Step 3 active -->
+            <rak:RakStepper id="rakStepper" activeStep="{view>/activeStep}" stepLabels="{view>/stepLabels}" extraSteps="2" class="rakContent rakStepperWrap" />
+
+            <!-- ═══ BUILDINGS — empty: Figma 136:8925 · populated: Figma 136:8658 ═══ -->
+            <VBox renderType="Bare" class="rakContent zp02Section zp02BuildingSection">
+                <customData>
+                    <core:CustomData key="zp02-populated" writeToDom="true" value="{= ${view>/buildings}.length > 0 ? 'true' : 'false' }" />
+                </customData>
+                <items>
+                    <HBox renderType="Bare" class="zp02SectionHead" alignItems="Center">
+                        <Title text="{= ${view>/buildings}.length > 0 ? ${i18n>step3BuildingListTitle} : ${i18n>step3BuildingDetailsTitle} }"
+                               level="H2" class="zp02SectionTitle zp02SectionTitle--buildings" />
+                        <Button id="btnAddBuilding" text="{i18n>step3ActionAddBuilding}" press=".onAddBuilding"
+                                class="rakBtn--solid-red zp02AddBuildingBtn" />
+                    </HBox>
+
+                    <VBox renderType="Bare" class="zp02RowList" visible="{= ${view>/buildings}.length > 0 }">
+                        <HBox renderType="Bare" class="zp02RowHead zp02BuildingCols" alignItems="Center">
+                            <Text text="{i18n>step3ColBuildingName}"  class="zp02Col zp02Col--bName" />
+                            <Text text="{i18n>step3ColBuildingType}"  class="zp02Col zp02Col--bType" />
+                            <Text text=""                              class="zp02Col zp02Col--bGap" />
+                            <Text text="{i18n>step3ColTypesFloors}"   class="zp02Col zp02Col--bFloors" />
+                        </HBox>
+                        <List id="buildingList"
+                              items="{view>/buildings}"
+                              showSeparators="None"
+                              showNoData="false"
+                              class="zp02CardList">
+                            <CustomListItem class="zp02CardRow">
+                                <HBox renderType="Bare" class="zp02BuildingCols" alignItems="Center">
+                                    <Text text="{view>displayName}"      wrapping="false" class="zp02Col zp02Col--bName" />
+                                    <Text text="{view>buildingTypeText}" wrapping="false" class="zp02Col zp02Col--bType">
+                                        <customData><core:CustomData key="zp02-label" writeToDom="true" value="{i18n>step3ColBuildingType}" /></customData>
+                                    </Text>
+                                    <Text text=""                        class="zp02Col zp02Col--bGap" />
+                                    <Text text="{view>floorSummary}"     wrapping="false" class="zp02Col zp02Col--bFloors">
+                                        <customData><core:CustomData key="zp02-label" writeToDom="true" value="{i18n>step3ColTypesFloors}" /></customData>
+                                    </Text>
+                                    <Button icon="assets/figma/zp02/step3/icon-menu-20.svg"
+                                            type="Transparent"
+                                            press=".onBuildingActionsPress"
+                                            tooltip="{i18n>step3ActionOpenMenu}"
+                                            ariaHasPopup="Menu"
+                                            class="zp02MenuBtn zp02MenuBtn--20" />
+                                </HBox>
+                            </CustomListItem>
+                        </List>
+                    </VBox>
+
+                    <!-- MSG-F03: inline step-level error strip -->
+                    <MessageStrip id="buildingErrorStrip"
+                                  text="{view>/stepError}"
+                                  type="Error"
+                                  showIcon="true"
+                                  visible="{= !!${view>/stepError} }"
+                                  class="rakErrorStrip zp02ErrorStrip" />
+                </items>
+            </VBox>
+
+            <core:HTML content="&lt;div class='rakContent zp02SectionDividerWrap'&gt;&lt;hr class='zp02SectionDivider' /&gt;&lt;/div&gt;" />
+
+            <!-- ═══ FENCES — empty/default: Figma 136:9137 · list: 136:8666 · edit row: 136:9069 ═══ -->
+            <VBox renderType="Bare" class="rakContent zp02Section zp02FenceSection">
+                <customData>
+                    <core:CustomData key="zp02-populated" writeToDom="true" value="{= (${view>/fences}.length > 0 || ${view>/fenceFormVisible}) ? 'true' : 'false' }" />
+                </customData>
+                <items>
+                    <HBox renderType="Bare" class="zp02SectionHead" alignItems="Center">
+                        <Title text="{= (${view>/fences}.length > 0 || ${view>/fenceFormVisible}) ? ${i18n>step3FenceWallListTitle} : ${i18n>step3FenceWallDetailsTitle} }"
+                               level="H2" class="zp02SectionTitle" />
+                        <Button id="btnAddFence"
+                                text="{= (${view>/fences}.length > 0 || ${view>/fenceFormVisible}) ? ${i18n>step3ActionAddFenceSmall} : ${i18n>step3ActionAddFenceWall} }"
+                                press=".onAddFencePress"
+                                enabled="{view>/fenceAddEnabled}"
+                                class="rakBtn--outline-red zp02AddFenceBtn" />
+                    </HBox>
+                    <Text text="{i18n>step3FenceWallDescription}" wrapping="true" class="zp02SectionDesc"
+                          visible="{= ${view>/fences}.length === 0 &amp;&amp; !${view>/fenceFormVisible} }" />
+
+                    <VBox renderType="Bare" class="zp02RowList" visible="{= ${view>/fences}.length > 0 || ${view>/fenceFormVisible} }">
+                        <HBox renderType="Bare" class="zp02RowHead zp02FenceCols" alignItems="Center">
+                            <Text text="{i18n>step3ColFenceTypePlain}" class="zp02Col zp02Col--fType zp02ReqStar" />
+                            <Text text="{i18n>step3LabelLength}"       class="zp02Col zp02Col--fNum zp02ReqStar" />
+                            <Text text="{i18n>step3LabelHeight}"       class="zp02Col zp02Col--fNum zp02ReqStar" />
+                            <Text text="{i18n>step3LabelNoOfGates}"    class="zp02Col zp02Col--fGates zp02ReqStar" />
+                        </HBox>
+
+                        <List id="fenceList"
+                              items="{view>/fences}"
+                              showSeparators="None"
+                              showNoData="false"
+                              class="zp02CardList">
+                            <CustomListItem class="zp02CardRow">
+                                <HBox renderType="Bare" class="zp02FenceCols" alignItems="Center">
+                                    <Text text="{view>fenceTypeText}" wrapping="false" class="zp02Col zp02Col--fType" />
+                                    <Text text="{view>length}"        class="zp02Col zp02Col--fNum">
+                                        <customData><core:CustomData key="zp02-label" writeToDom="true" value="{i18n>step3LabelLength}" /></customData>
+                                    </Text>
+                                    <Text text="{view>height}"        class="zp02Col zp02Col--fNum">
+                                        <customData><core:CustomData key="zp02-label" writeToDom="true" value="{i18n>step3LabelHeight}" /></customData>
+                                    </Text>
+                                    <Text text="{view>numberOfGates}" class="zp02Col zp02Col--fGates">
+                                        <customData><core:CustomData key="zp02-label" writeToDom="true" value="{i18n>step3LabelNoOfGates}" /></customData>
+                                    </Text>
+                                    <Button icon="assets/figma/zp02/step3/icon-menu-24.svg"
+                                            type="Transparent"
+                                            press=".onFenceActionsPress"
+                                            tooltip="{i18n>step3ActionOpenMenu}"
+                                            ariaHasPopup="Menu"
+                                            class="zp02MenuBtn zp02MenuBtn--24" />
+                                </HBox>
+                            </CustomListItem>
+                        </List>
+
+                        <!-- Add-fence row (Figma "Fence Line DML" 115:3099) -->
+                        <HBox id="fenceFormArea" visible="{view>/fenceFormVisible}" class="zp02FenceEditRow zp02FenceCols" alignItems="Start">
+                            <VBox renderType="Bare" class="zp02Field zp02Col zp02Col--fType">
+                                <Label text="{i18n>step3LabelFenceType}" labelFor="selFenceType" class="zp02VisuallyHidden" />
+                                <Select id="selFenceType"
+                                        selectedKey="{view>/fenceForm/fenceTypeCode}"
+                                        items="{view>/availableFenceTypes}"
+                                        change=".onFenceFormFieldChange"
+                                        valueState="{= ${view>/fenceErrors/fenceType} ? 'Error' : 'None' }"
+                                        valueStateText="{view>/fenceErrors/fenceType}"
+                                        class="rakFormSelect zp02FieldControl">
+                                    <core:Item key="{view>key}" text="{view>text}" />
+                                    <customData>
+                                        <core:CustomData key="zp02-empty" writeToDom="true" value="{= ${view>/fenceForm/fenceTypeCode} ? 'false' : 'true' }" />
+                                    </customData>
+                                </Select>
+                                <Text text="{view>/fenceErrors/fenceType}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/fenceErrors/fenceType} }" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02Col zp02Col--fNum">
+                                <Label text="{i18n>step3LabelLength}" labelFor="inpFenceLength" class="zp02VisuallyHidden" />
+                                <Input id="inpFenceLength"
+                                       value="{view>/fenceForm/length}"
+                                       placeholder="0"
+                                       class="rakFormInput zp02FieldControl"
+                                       valueState="{= ${view>/fenceErrors/length} ? 'Error' : 'None' }"
+                                       valueStateText="{view>/fenceErrors/length}"
+                                       showValueStateMessage="false"
+                                       liveChange=".onFenceFormFieldChange" />
+                                <Text text="{view>/fenceErrors/length}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/fenceErrors/length} }" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02Col zp02Col--fNum">
+                                <Label text="{i18n>step3LabelHeight}" labelFor="inpFenceHeight" class="zp02VisuallyHidden" />
+                                <Input id="inpFenceHeight"
+                                       value="{view>/fenceForm/height}"
+                                       placeholder="0"
+                                       class="rakFormInput zp02FieldControl"
+                                       valueState="{= ${view>/fenceErrors/height} ? 'Error' : 'None' }"
+                                       valueStateText="{view>/fenceErrors/height}"
+                                       showValueStateMessage="false"
+                                       liveChange=".onFenceFormFieldChange" />
+                                <Text text="{view>/fenceErrors/height}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/fenceErrors/height} }" />
+                            </VBox>
+                            <VBox renderType="Bare" class="zp02Field zp02Col zp02Col--fGates">
+                                <Label text="{i18n>step3LabelNoOfGates}" labelFor="inpFenceGates" class="zp02VisuallyHidden" />
+                                <Input id="inpFenceGates"
+                                       value="{view>/fenceForm/numberOfGates}"
+                                       placeholder="0"
+                                       class="rakFormInput zp02FieldControl"
+                                       valueState="{= ${view>/fenceErrors/numberOfGates} ? 'Error' : 'None' }"
+                                       valueStateText="{view>/fenceErrors/numberOfGates}"
+                                       showValueStateMessage="false"
+                                       liveChange=".onFenceFormFieldChange" />
+                                <Text text="{view>/fenceErrors/numberOfGates}" class="rakFormError zp02ValidationError"
+                                      visible="{= !!${view>/fenceErrors/numberOfGates} }" />
+                            </VBox>
+                            <!-- Figma trash sits in the menu column; it cancels the unsaved row -->
+                            <Button id="btnFenceCancel"
+                                    icon="assets/figma/zp02/step3/icon-delete-20.svg"
+                                    tooltip="{i18n>step3ActionRemoveFenceRow}"
+                                    press=".onAddFenceCancel"
+                                    type="Transparent"
+                                    class="zp02IconBtn" />
+                            <!-- Confirm is required by the existing add/validate flow (not in the DML) -->
+                            <HBox renderType="Bare" class="zp02FenceEditRow__confirm">
+                                <Button id="btnFenceConfirm"
+                                        text="{i18n>step3ActionAddFenceConfirm}"
+                                        press=".onAddFenceConfirm"
+                                        class="rakBtn--outline-red zp02SmallBtn" />
+                            </HBox>
+                        </HBox>
+                    </VBox>
+                </items>
+            </VBox>
+
+            <!-- Footer spacer -->
+            <core:HTML content="&lt;div style='height:80px'&gt;&lt;/div&gt;" />
+
+        </content>
+    </Page>
+
+</mvc:View>

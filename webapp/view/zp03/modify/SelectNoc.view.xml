@@ -1,0 +1,259 @@
+﻿<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:rak="rak.services.control"
+    controllerName="rak.services.controller.zp03.modify.SelectNoc"
+    displayBlock="true">
+
+    <Page
+        id="zp03SelectNocPage"
+        enableScrolling="true"
+        busy="{view>/busy}"
+        busyIndicatorDelay="0"
+        class="rakPage rakApp zp03Page zp03SelectNoc"
+        showHeader="true">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button
+                        id="btnZp03Back"
+                        text="{i18n>actionBack}"
+                        type="Transparent"
+                        press=".onBack"
+                        class="zp03BackBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button
+                        id="btnZp03Continue"
+                        text="{i18n>actionContinue}"
+                        icon="sap-icon://navigation-right-arrow"
+                        iconFirst="false"
+                        press=".onContinue"
+                        enabled="{view>/canContinue}"
+                        type="Emphasized"
+                        class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+        <content>
+
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <items>
+                    <HBox alignItems="Center" class="rakPermitHeading__left">
+                        <items>
+                            <Image
+                                src="assets/figma/zp02/step1/icon-permit-muni-tight.svg"
+                                width="30px"
+                                height="30px"
+                                class="rakPermitHeading__icon"
+                                alt="Modify Infrastructure NOC" />
+                            <VBox>
+                                <Title
+                                    text="{i18n>zp03ModifyTitle}"
+                                    titleStyle="H4"
+                                    class="rakPermitHeading__title" />
+                                <Text
+                                    text="{path: 'loginUser>/englishFullName', formatter: '.formatOwnerLine'}"
+                                    class="zp03OwnerLine" />
+                            </VBox>
+                        </items>
+                    </HBox>
+                    <HBox alignItems="Center" class="rakPermitHeading__actions">
+                        <items>
+                            <Button
+                                text="{i18n>actionSaveAsDraft}"
+                                icon="assets/figma/zp02/step1/icon-20px-b.svg"
+                                press=".onSaveAsDraft"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                            <Button
+                                text="{i18n>actionDelete}"
+                                icon="assets/figma/zp02/step1/icon-20px-a.svg"
+                                press=".onDelete"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                        </items>
+                    </HBox>
+                </items>
+            </HBox>
+
+            <rak:RakStepper
+                id="zp03Stepper"
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                class="rakContent rakStepperWrap" />
+
+            <VBox class="rakSectionHeader rakContent">
+                <items>
+                    <Title text="{i18n>zp03SelectNocTitle}" class="rakSection__title" />
+                    <Text text="{i18n>zp03SelectNocDesc}" class="rakSection__desc" wrapping="true" />
+                </items>
+            </VBox>
+
+            <HBox id="zp03FilterRow" class="rakFilters rakContent" alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
+                <items>
+                    <HBox class="rakFilters__dropdowns" alignItems="Center" wrap="Wrap">
+                        <items>
+                            <Select
+                                id="selZp03Status"
+                                width="160px"
+                                class="rakSelect"
+                                selectedKey="{view>/filters/status}"
+                                change=".onFilterChange"
+                                items="{path: 'view>/statusOptions', templateShareable: false}">
+                                <core:Item key="{view>key}" text="{view>text}" />
+                            </Select>
+                            <Select
+                                id="selZp03NocType"
+                                width="180px"
+                                class="rakSelect"
+                                selectedKey="{view>/filters/nocType}"
+                                change=".onFilterChange"
+                                items="{path: 'view>/nocTypeOptions', templateShareable: false}">
+                                <core:Item key="{view>key}" text="{view>text}" />
+                            </Select>
+                            <Select
+                                id="selZp03ProjectType"
+                                width="220px"
+                                class="rakSelect"
+                                selectedKey="{view>/filters/projectType}"
+                                change=".onFilterChange"
+                                items="{path: 'view>/projectTypeOptions', templateShareable: false}">
+                                <core:Item key="{view>key}" text="{view>text}" />
+                            </Select>
+                        </items>
+                    </HBox>
+                    <SearchField
+                        id="sfZp03Search"
+                        width="280px"
+                        placeholder="{i18n>zp03SearchPlaceholder}"
+                        value="{view>/filters/search}"
+                        search=".onSearch"
+                        liveChange=".onSearchLiveChange"
+                        class="rakSearch" />
+                </items>
+            </HBox>
+
+            <Text
+                id="zp03ResultCount"
+                text="{parts: [{path: 'view>/resultCount'}, {path: 'view>/totalCount'}], formatter: '.formatResultCount'}"
+                class="rakResultCount rakContent" />
+
+            <MessageStrip
+                id="zp03Stopper"
+                text="{view>/stopperMessage}"
+                type="Error"
+                showIcon="true"
+                showCloseButton="false"
+                visible="{= !!${view>/stopperMessage} }"
+                class="rakContent zp03Stopper" />
+
+            <MessageStrip
+                id="zp03EmptyEligible"
+                text="{i18n>zp03NoEligibleNocs}"
+                type="Warning"
+                showIcon="true"
+                showCloseButton="false"
+                visible="{view>/showEmptyEligible}"
+                class="rakContent zp03EmptyStrip" />
+
+            <List
+                id="zp03NocList"
+                mode="None"
+                showSeparators="None"
+                noDataText="{i18n>zp03NoResults}"
+                items="{path: 'view>/displayedNocs', templateShareable: false}"
+                updateFinished=".onListUpdateFinished"
+                class="rakContent zp03NocList">
+                <CustomListItem type="Active" press=".onCardPress" class="zp03NocCard">
+                    <content>
+                        <HBox width="100%" alignItems="Start" class="zp03NocCardInner">
+                            <items>
+                                <RadioButton
+                                    selected="{view>selected}"
+                                    select=".onRadioSelect"
+                                    class="zp03NocCard__radio" />
+
+                                <VBox width="100%" class="zp03NocCard__body">
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="zp03NocCard__top">
+                                        <Title text="{view>nocNumber}" level="H5" titleStyle="H5" class="zp03NocCard__number" />
+                                        <HBox alignItems="Center" class="zp03NocCard__badges">
+                                            <core:HTML content="{path: 'view>status', formatter: '.formatStatusBadge'}" />
+                                            <core:HTML content="{path: 'view>eligibilityStatus', formatter: '.formatEligibilityBadge'}" />
+                                        </HBox>
+                                    </HBox>
+
+                                    <HBox wrap="Wrap" class="zp03NocCard__grid">
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelProjectRef}" class="zp03NocCard__label" />
+                                            <Text text="{view>projectReference}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelProjectName}" class="zp03NocCard__label" />
+                                            <Text text="{view>projectName}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelNocType}" class="zp03NocCard__label" />
+                                            <Text text="{view>nocType}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelServiceGroup}" class="zp03NocCard__label" />
+                                            <Text text="{view>serviceGroup}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelProjectType}" class="zp03NocCard__label" />
+                                            <Text text="{view>projectType}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelProjectStage}" class="zp03NocCard__label" />
+                                            <Text text="{view>projectStage}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelIssueDate}" class="zp03NocCard__label" />
+                                            <Text text="{path: 'view>issueDate', formatter: '.formatDate'}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field">
+                                            <Label text="{i18n>zp03LabelExpiryDate}" class="zp03NocCard__label" />
+                                            <Text text="{path: 'view>expiryDate', formatter: '.formatDate'}" class="zp03NocCard__value" />
+                                        </VBox>
+                                        <VBox class="zp03NocCard__field zp03NocCard__field--wide">
+                                            <Label text="{i18n>zp03LabelEntities}" class="zp03NocCard__label" />
+                                            <Text text="{path: 'view>involvedEntities', formatter: '.formatEntities'}" class="zp03NocCard__value" />
+                                        </VBox>
+                                    </HBox>
+
+                                    <Text
+                                        text="{= ${view>complexity} ? (${view>complexity} + ' complexity') : '' }"
+                                        visible="{= !!${view>complexity} }"
+                                        class="zp03NocCard__complexity" />
+                                </VBox>
+                            </items>
+                        </HBox>
+                    </content>
+                </CustomListItem>
+            </List>
+
+        </content>
+    </Page>
+</mvc:View>

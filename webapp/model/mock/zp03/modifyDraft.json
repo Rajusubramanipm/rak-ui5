@@ -1,0 +1,11 @@
+{
+  "draftId": null,
+  "nocId": null,
+  "details": {},
+  "workLocation": {},
+  "attachments": [],
+  "status": "NEW",
+  "meta": {
+    "note": "Shell mock only — Modify Infrastructure NOC draft payload"
+  }
+}

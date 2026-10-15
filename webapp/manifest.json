@@ -1,0 +1,334 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "rak.services",
+    "type": "application",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": {
+      "version": "0.1.0"
+    },
+    "dataSources": {
+      "ZMUN_PRJ_PRM_SRV": {
+        "uri": "/sap/opu/odata/sap/ZMUN_PRJ_PRM_SRV/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "ZEGA_BP_SRV": {
+        "uri": "/sap/opu/odata/sap/ZEGA_BP_SRV/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/ZEGA_BP_SRV/metadata.xml"
+        }
+      },
+      "ZEGA_PRJ_PRM_SRV": {
+        "uri": "/sap/opu/odata/sap/ZEGA_PRJ_PRM_SRV/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/ZEGA_PRJ_PRM_SRV/metadata.xml"
+        }
+      },
+      "ZEGA_PRJ_TOWNPLANNING_SRV": {
+        "uri": "/sap/opu/odata/sap/ZEGA_PRJ_TOWNPLANNING_SRV/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/ZEGA_PRJ_TOWNPLANNING_SRV/metadata.xml"
+        }
+      },
+      "ZEGA_PRM_CASE_SRV": {
+        "uri": "/sap/opu/odata/sap/ZEGA_PRM_CASE_SRV/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/ZEGA_PRM_CASE_SRV/metadata.xml"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": false
+    },
+    "supportedThemes": [
+      "sap_horizon",
+      "sap_horizon_dark",
+      "sap_fiori_3"
+    ]
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "rak.services.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "appView"
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {},
+        "sap.f": {},
+        "sap.ui.layout": {},
+        "sap.ui.unified": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "resources": {
+      "css": [
+        { "uri": "css/common.css" },
+        { "uri": "css/zp02.css" },
+        { "uri": "css/zp03.css" }
+      ]
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "rak.services.i18n.i18n",
+          "supportedLocales": ["en", "ar"],
+          "fallbackLocale": "en"
+        }
+      },
+      "app": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/mock/zp02/app.json"
+      },
+      "": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "OneWay",
+          "defaultCountMode": "Request"
+        },
+        "dataSource": "ZMUN_PRJ_PRM_SRV",
+        "preload": true
+      },
+      "ZEGA_BP": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "OneWay",
+          "defaultCountMode": "Request"
+        },
+        "dataSource": "ZEGA_BP_SRV",
+        "preload": true
+      },
+      "ZEGA_PRJ": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "OneWay",
+          "defaultCountMode": "Request"
+        },
+        "dataSource": "ZEGA_PRJ_PRM_SRV",
+        "preload": true
+      },
+      "ZEGA_PRJ_TWNPLN": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "OneWay",
+          "defaultCountMode": "Request"
+        },
+        "dataSource": "ZEGA_PRJ_TOWNPLANNING_SRV",
+        "preload": true
+      },
+      "ZEGA_PRM_CASE": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "OneWay",
+          "defaultCountMode": "Request"
+        },
+        "dataSource": "ZEGA_PRM_CASE_SRV",
+        "preload": true
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "rak.services.view",
+        "controlId": "appShell",
+        "controlAggregation": "pages",
+        "bypassed": {
+          "target": "notFound"
+        },
+        "async": true
+      },
+      "routes": [
+        {
+          "name": "home",
+          "pattern": "",
+          "target": ["home"]
+        },
+        {
+          "name": "zp02-new-building-permit",
+          "pattern": "zp02/new-building-permit",
+          "target": ["zp02ProjectSelection"]
+        },
+        {
+          "name": "zp02-project-selection",
+          "pattern": "zp02/new-building-permit/project-selection",
+          "target": ["zp02ProjectSelection"]
+        },
+        {
+          "name": "zp02-permit-information",
+          "pattern": "zp02/new-building-permit/permit-information",
+          "target": ["zp02PermitInformation"]
+        },
+        {
+          "name": "zp02-fences-buildings",
+          "pattern": "zp02/new-building-permit/fences-buildings",
+          "target": ["zp02FencesBuildings"]
+        },
+        {
+          "name": "zp02-business-partners",
+          "pattern": "zp02/new-building-permit/business-partners",
+          "target": ["zp02BusinessPartners"]
+        },
+        {
+          "name": "zp02-attachments",
+          "pattern": "zp02/new-building-permit/attachments",
+          "target": ["zp02Attachments"]
+        },
+        {
+          "name": "zp02-summary",
+          "pattern": "zp02/new-building-permit/summary",
+          "target": ["zp02Summary"]
+        },
+        {
+          "name": "zp02-payment",
+          "pattern": "zp02/new-building-permit/payment",
+          "target": ["zp02Payment"]
+        },
+        {
+          "name": "zp02-confirmation",
+          "pattern": "zp02/new-building-permit/confirmation",
+          "target": ["zp02Confirmation"]
+        },
+        {
+          "name": "zp02-drawing-upload",
+          "pattern": "zp02/new-building-permit/drawing-upload",
+          "target": ["zp02DrawingUpload"]
+        },
+        {
+          "name": "zp03-modify-infrastructure-noc",
+          "pattern": "zp03/modify-infrastructure-noc",
+          "target": ["zp03SelectNoc"]
+        },
+        {
+          "name": "zp03-select-noc",
+          "pattern": "zp03/modify-infrastructure-noc/select-noc",
+          "target": ["zp03SelectNoc"]
+        },
+        {
+          "name": "zp03-details",
+          "pattern": "zp03/modify-infrastructure-noc/details",
+          "target": ["zp03Details"]
+        },
+        {
+          "name": "zp03-work-location",
+          "pattern": "zp03/modify-infrastructure-noc/work-location",
+          "target": ["zp03WorkLocation"]
+        },
+        {
+          "name": "zp03-attachments",
+          "pattern": "zp03/modify-infrastructure-noc/attachments",
+          "target": ["zp03Attachments"]
+        },
+        {
+          "name": "zp03-review",
+          "pattern": "zp03/modify-infrastructure-noc/review",
+          "target": ["zp03Review"]
+        },
+        {
+          "name": "zp03-confirmation",
+          "pattern": "zp03/modify-infrastructure-noc/confirmation",
+          "target": ["zp03Confirmation"]
+        }
+      ],
+      "targets": {
+        "home": {
+          "viewName": "Home",
+          "viewId": "home"
+        },
+        "zp02ProjectSelection": {
+          "viewName": "zp02.step1.ProjectSelection",
+          "viewId": "zp02ProjectSelection"
+        },
+        "zp02PermitInformation": {
+          "viewName": "zp02.step2.PermitInformation",
+          "viewId": "zp02PermitInformation"
+        },
+        "zp02FencesBuildings": {
+          "viewName": "zp02.step3.FencesBuildings",
+          "viewId": "zp02FencesBuildings"
+        },
+        "zp02BusinessPartners": {
+          "viewName": "zp02.step4.BusinessPartners",
+          "viewId": "zp02BusinessPartners"
+        },
+        "zp02Attachments": {
+          "viewName": "zp02.step5.Attachments",
+          "viewId": "zp02Attachments"
+        },
+        "zp02Summary": {
+          "viewName": "zp02.step6.Summary",
+          "viewId": "zp02Summary"
+        },
+        "zp02Payment": {
+          "viewName": "zp02.step7.Payment",
+          "viewId": "zp02Payment"
+        },
+        "zp02Confirmation": {
+          "viewName": "zp02.step8.Confirmation",
+          "viewId": "zp02Confirmation"
+        },
+        "zp02DrawingUpload": {
+          "viewName": "zp02.step9.DrawingUpload",
+          "viewId": "zp02DrawingUpload"
+        },
+        "zp03SelectNoc": {
+          "viewName": "zp03.modify.SelectNoc",
+          "viewId": "zp03SelectNoc"
+        },
+        "zp03Details": {
+          "viewName": "zp03.modify.Details",
+          "viewId": "zp03Details"
+        },
+        "zp03WorkLocation": {
+          "viewName": "zp03.modify.WorkLocation",
+          "viewId": "zp03WorkLocation"
+        },
+        "zp03Attachments": {
+          "viewName": "zp03.modify.Attachments",
+          "viewId": "zp03Attachments"
+        },
+        "zp03Review": {
+          "viewName": "zp03.modify.Review",
+          "viewId": "zp03Review"
+        },
+        "zp03Confirmation": {
+          "viewName": "zp03.modify.Confirmation",
+          "viewId": "zp03Confirmation"
+        },
+        "notFound": {
+          "viewName": "NotFound",
+          "viewId": "notFound"
+        }
+      }
+    }
+  }
+}

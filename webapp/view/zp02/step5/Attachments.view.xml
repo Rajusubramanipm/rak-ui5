@@ -1,0 +1,347 @@
+<mvc:View
+    controllerName="rak.services.controller.zp02.step5.Attachments"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:unified="sap.ui.unified"
+    xmlns:rak="rak.services.control"
+    displayBlock="true">
+
+    <Page id="attachmentsPage" enableScrolling="true" class="rakPage rakApp zp02Step5 zp02Frame">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button id="btnBack" text="{i18n>actionBack}" icon="sap-icon://navigation-left-arrow" press=".onBack" type="Transparent" class="rakBackBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button id="btnNext" text="{i18n>actionNext}" icon="sap-icon://navigation-right-arrow" iconFirst="false" press=".onNext" type="Emphasized" class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+        <content>
+
+            <!-- Permit heading row -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <HBox class="rakPermitHeading__left" alignItems="Center">
+                    <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg" width="30px" height="30px" class="rakPermitHeading__icon" />
+                    <Title text="New Building Permit" titleStyle="H4" class="rakPermitHeading__title" />
+                </HBox>
+                <HBox class="rakPermitHeading__actions" alignItems="Center">
+                    <Button id="btnSaveDraft" text="{i18n>actionSaveAsDraft}" press=".onSaveDraft" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-b.svg" class="rakPermitAction" />
+                    <Button id="btnDelete" text="{i18n>actionDelete}" press=".onDelete" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-a.svg" class="rakPermitAction" />
+                </HBox>
+            </HBox>
+
+            <!-- Context bar -->
+            <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                <items>
+                    <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{view>/project/ownerName}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{view>/project/projectNumber}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{view>/project/address}" class="rakContextBar__value" />
+                </items>
+            </HBox>
+
+            <!-- Stepper -->
+            <rak:RakStepper
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                extraSteps="2"
+                class="rakContent rakStepperWrap" />
+
+            <!-- ═══ Attachments — Figma 231:10203 ═══ -->
+            <VBox renderType="Bare" class="rakContent zp02S5Intro">
+                <Title text="{i18n>step5SectionTitle}" level="H2" class="zp02S5Title" />
+                <Text text="{i18n>step5MaxFileSizeNote}" class="zp02S5Desc" />
+            </VBox>
+
+            <!-- Dynamic BRD document matrix: category items span the row,
+                 document items are 328px "File Uploader" tiles (3-column grid). -->
+            <VBox renderType="Bare" class="rakContent">
+                <List
+                    id="docList"
+                    items="{view>/docItems}"
+                    showSeparators="None"
+                    showNoData="false"
+                    class="zp02S5DocGrid">
+                    <items>
+                        <CustomListItem class="zp02S5Item">
+                            <customData>
+                                <core:CustomData key="zp02-type" writeToDom="true" value="{view>type}" />
+                            </customData>
+                            <!-- Category heading -->
+                            <Title text="{view>label}" level="H3" class="zp02S5CatTitle"
+                                   visible="{= ${view>type} === 'CATEGORY' }" />
+                            <!-- Document tile -->
+                            <VBox renderType="Bare" class="zp02S5Tile" visible="{= ${view>type} === 'DOC' }">
+                                <customData>
+                                    <core:CustomData key="zp02-missing" writeToDom="true"
+                                        value="{= (${view>/highlightMissing} &amp;&amp; ${view>isMandatory} &amp;&amp; ${view>providingMechanism} === 'UPLOAD' &amp;&amp; ${view>uploadState} !== 'UPLOADED') ? 'true' : 'false' }" />
+                                </customData>
+                                <Text text="{view>name}" class="zp02S5Label">
+                                    <customData>
+                                        <core:CustomData key="zp02-required" writeToDom="true" value="{= ${view>isMandatory} ? 'true' : 'false' }" />
+                                    </customData>
+                                </Text>
+
+                                <!-- System retrieved -->
+                                <HBox renderType="Bare" class="zp02FileField zp02FileField--system"
+                                      visible="{= ${view>providingMechanism} === 'SYSTEM' }">
+                                    <core:Icon src="sap-icon://accept" class="zp02FileField__sysIcon" />
+                                    <Text text="{i18n>step5LabelSystemRetrieved}" class="zp02FileField__text" />
+                                </HBox>
+
+                                <!-- Upload: idle -->
+                                <unified:FileUploader
+                                    maximumFileSize="10"
+                                    placeholder="{i18n>step5PlaceholderSelectFile}"
+                                    buttonText=""
+                                    icon="assets/figma/zp02/step5/icon-attach-20.svg"
+                                    iconOnly="true"
+                                    tooltip="{i18n>step5PlaceholderSelectFile}"
+                                    buttonOnly="false"
+                                    class="rakFileInput zp02FileUploader"
+                                    visible="{= ${view>providingMechanism} === 'UPLOAD' &amp;&amp; ${view>uploadState} === 'IDLE' }"
+                                    change=".onDocumentFileChange"
+                                    fileSizeExceed=".onDocumentFileSizeExceed"
+                                    typeMissmatch=".onDocumentTypeMissmatch" />
+                                <!-- Upload: in progress -->
+                                <HBox renderType="Bare" class="zp02FileField zp02FileField--busy"
+                                      visible="{= ${view>providingMechanism} === 'UPLOAD' &amp;&amp; ${view>uploadState} === 'UPLOADING' }">
+                                    <Image src="assets/figma/zp02/step5/uploader-indicator-16.png" width="16px" height="16px" alt="" class="zp02FileField__spinner" />
+                                    <Text text="{= ${i18n>step5LabelUploading} + ' ' + ${view>uploadProgress} + '%' }" class="zp02FileField__text" />
+                                </HBox>
+                                <!-- Upload: done (Figma File Uploader "uploaded": file name + delete segment) -->
+                                <HBox renderType="Bare" class="zp02FileField zp02FileField--done"
+                                      visible="{= ${view>providingMechanism} === 'UPLOAD' &amp;&amp; ${view>uploadState} === 'UPLOADED' }">
+                                    <Text text="{view>fileMeta/fileName}" wrapping="false" class="zp02FileField__name" />
+                                    <Button icon="assets/figma/zp02/step5/icon-delete-uploaded-20.svg"
+                                            type="Transparent"
+                                            tooltip="{i18n>step5ActionRemoveUploadedFile}"
+                                            press=".onRemoveDocumentFile"
+                                            class="zp02FileField__seg" />
+                                </HBox>
+                                <!-- Errors -->
+                                <Text visible="{= !!${view>uploadError} }" text="{view>uploadError}"
+                                      class="rakFieldError zp02ValidationError" />
+                                <!-- Shown for missing docs; reserved (hidden) on the others so a row's fields stay aligned -->
+                                <Text text="{i18n>step5MissingMandatory}" class="zp02ValidationError zp02S5MissingMsg"
+                                      visible="{= !${view>uploadError} &amp;&amp; ${view>/highlightMissing} }" />
+                            </VBox>
+                        </CustomListItem>
+                    </items>
+                </List>
+            </VBox>
+
+            <!-- ═══ Additional Supporting Documents (Figma 1757:10837) ═══ -->
+            <VBox renderType="Bare" class="rakContent zp02S5Section">
+                <Title text="{i18n>step5LabelAdditionalDocs}" level="H3" class="zp02S5CatTitle" />
+                <List
+                    id="additionalDocList"
+                    items="{view>/additionalDocuments}"
+                    showSeparators="None"
+                    showNoData="false"
+                    class="zp02S5AddList">
+                    <items>
+                        <CustomListItem class="zp02S5AddItem">
+                            <VBox renderType="Bare">
+                                <HBox renderType="Bare" class="zp02S5AddRow">
+                                    <VBox renderType="Bare" class="zp02S5Tile zp02S5Tile--bare">
+                                        <unified:FileUploader
+                                            maximumFileSize="10"
+                                                    placeholder="{i18n>step5PlaceholderSelectFile}"
+                                            buttonText=""
+                                            icon="assets/figma/zp02/step5/icon-attach-20.svg"
+                                            iconOnly="true"
+                                            tooltip="{i18n>step5PlaceholderSelectFile}"
+                                            buttonOnly="false"
+                                            class="rakFileInput zp02FileUploader"
+                                            visible="{= ${view>uploadState} === 'IDLE' }"
+                                            change=".onAdditionalFileChange"
+                                            fileSizeExceed=".onAdditionalFileSizeExceed" />
+                                        <HBox renderType="Bare" class="zp02FileField zp02FileField--busy"
+                                              visible="{= ${view>uploadState} === 'UPLOADING' }">
+                                            <Image src="assets/figma/zp02/step5/uploader-indicator-16.png" width="16px" height="16px" alt="" class="zp02FileField__spinner" />
+                                            <Text text="{= ${i18n>step5LabelUploading} + ' ' + ${view>uploadProgress} + '%' }" class="zp02FileField__text" />
+                                        </HBox>
+                                        <HBox renderType="Bare" class="zp02FileField zp02FileField--done zp02FileField--noSeg"
+                                              visible="{= ${view>uploadState} === 'UPLOADED' }">
+                                            <Text text="{view>fileMeta/fileName}" wrapping="false" class="zp02FileField__name" />
+                                        </HBox>
+                                    </VBox>
+                                    <Input value="{view>description}"
+                                           placeholder="{i18n>step5LabelFileDescription}"
+                                           class="rakFormInput zp02FieldControl zp02S5Desc328" />
+                                    <Button icon="assets/figma/zp02/step5/icon-delete-20.svg"
+                                            type="Transparent"
+                                            tooltip="{i18n>step5ActionRemoveFile}"
+                                            press=".onRemoveAdditionalDocument"
+                                            class="zp02S5IconBtn" />
+                                </HBox>
+                                <Text visible="{= !!${view>uploadError} }" text="{view>uploadError}"
+                                      class="rakFieldError zp02ValidationError" />
+                            </VBox>
+                        </CustomListItem>
+                    </items>
+                </List>
+                <HBox renderType="Bare" class="zp02S5LinkRow">
+                    <Image src="assets/figma/zp02/step5/icon-attach-16.svg" width="16px" height="16px" alt="" />
+                    <Link text="{i18n>step5ActionAddAnotherFile}" press=".onAddAnotherFile" class="rakAddFileLink zp02S5Link zp02S5Link--14" />
+                </HBox>
+            </VBox>
+
+            <!-- ═══ Load Cards (DOC-21, Figma 1617:11323) ═══ -->
+            <VBox renderType="Bare" class="rakContent zp02S5Section">
+                <customData>
+                    <core:CustomData key="zp02-missing" writeToDom="true"
+                        value="{= (${view>/highlightMissing} &amp;&amp; ${view>/loadCard/uploadState} !== 'UPLOADED') ? 'true' : 'false' }" />
+                </customData>
+                <Title text="{i18n>step5LabelLoadCards}" level="H3" class="zp02S5CatTitle zp02S5CatTitle--required" />
+                <Text text="{i18n>step5LoadCardDesc}" class="zp02S5Desc zp02S5Desc--tight" />
+                <HBox renderType="Bare" class="zp02S5LoadRow">
+                    <VBox renderType="Bare" class="zp02S5Tile zp02S5Tile--bare">
+                        <unified:FileUploader
+                            id="loadCardFileUploader"
+                            maximumFileSize="10"
+                            fileType="xls,xlsx"
+                            placeholder="{i18n>step5PlaceholderSelectFile}"
+                            buttonText=""
+                            icon="assets/figma/zp02/step5/icon-attach-20.svg"
+                            iconOnly="true"
+                            tooltip="{i18n>step5PlaceholderSelectFile}"
+                            buttonOnly="false"
+                            class="rakFileInput zp02FileUploader"
+                            visible="{= ${view>/loadCard/uploadState} === 'IDLE' }"
+                            change=".onLoadCardFileChange"
+                            fileSizeExceed=".onLoadCardFileSizeExceed"
+                            typeMissmatch=".onLoadCardTypeMissmatch" />
+                        <HBox renderType="Bare" class="zp02FileField zp02FileField--busy"
+                              visible="{= ${view>/loadCard/uploadState} === 'UPLOADING' }">
+                            <Image src="assets/figma/zp02/step5/uploader-indicator-16.png" width="16px" height="16px" alt="" class="zp02FileField__spinner" />
+                            <Text text="{= ${i18n>step5LabelUploading} + ' ' + ${view>/loadCard/uploadProgress} + '%' }" class="zp02FileField__text" />
+                        </HBox>
+                        <HBox renderType="Bare" class="zp02FileField zp02FileField--done"
+                              visible="{= ${view>/loadCard/uploadState} === 'UPLOADED' }">
+                            <Text text="{view>/loadCard/fileMeta/fileName}" wrapping="false" class="zp02FileField__name" />
+                            <Button icon="assets/figma/zp02/step5/icon-delete-uploaded-20.svg"
+                                    type="Transparent"
+                                    tooltip="{i18n>step5ActionRemoveUploadedFile}"
+                                    press=".onRemoveLoadCardFile"
+                                    class="zp02FileField__seg" />
+                        </HBox>
+                    </VBox>
+                    <HBox renderType="Bare" class="zp02S5LinkRow zp02S5LinkRow--template">
+                        <Image src="assets/figma/zp02/step5/icon-download-20.svg" width="20px" height="20px" alt="" />
+                        <Link text="{i18n>step5LoadCardTemplateLink}" press=".onDownloadLoadCardTemplate" class="rakLoadCardLink zp02S5Link" />
+                    </HBox>
+                </HBox>
+                <Text visible="{= !!${view>/loadCard/uploadError} }" text="{view>/loadCard/uploadError}"
+                      class="rakFieldError zp02ValidationError" />
+                <Text text="{i18n>step5MissingMandatory}" class="zp02ValidationError zp02S5MissingMsg"
+                      visible="{= !${view>/loadCard/uploadError} &amp;&amp; ${view>/highlightMissing} &amp;&amp; ${view>/loadCard/uploadState} !== 'UPLOADED' }" />
+            </VBox>
+
+            <!-- ═══ Declaration (Figma 231:10233) ═══ -->
+            <VBox renderType="Bare" class="rakContent zp02S5Section zp02S5Declaration">
+                <Title text="{i18n>step5LabelDeclarationSection}" level="H3" class="zp02S5CatTitle" />
+                <HBox renderType="Bare" class="zp02S5DeclRow">
+                    <!-- Acceptance is required by the existing flow (step5ValDeclarationRequired); not drawn in the Figma -->
+                    <CheckBox
+                        id="declarationCheckBox"
+                        selected="{view>/declarationAccepted}"
+                        select=".onDeclarationChange"
+                        ariaLabelledBy="declarationText"
+                        class="zp02S5Check" />
+                    <Text id="declarationText"
+                          text="{view>/declarationText}"
+                          wrapping="true"
+                          class="rakDeclarationText zp02S5DeclText" />
+                </HBox>
+                <Text
+                    id="declarationError"
+                    visible="{= !!${view>/declarationError} }"
+                    text="{view>/declarationError}"
+                    class="rakFieldError zp02ValidationError" />
+            </VBox>
+
+            <!-- Submit note (Figma 231:10237) -->
+            <HBox renderType="Bare" class="rakContent zp02S5Note">
+                <Image src="assets/figma/zp02/step5/icon-attention-20.svg" width="20px" height="20px" alt="" />
+                <Text text="{i18n>step5SubmitNote}" class="zp02S5Note__text" />
+            </HBox>
+
+            <core:HTML content="&lt;div style='height:48px'&gt;&lt;/div&gt;" />
+        </content>
+
+        <!-- MSG-C08 — Figma "System messages" 231:10327 -->
+        <dependents>
+            <Dialog
+                id="mandatoryAttachDialog"
+                title="{i18n>msgC08MandatoryAttachTitle}"
+                type="Message"
+                contentWidth="523px"
+                class="zp02SysMsgDialog">
+                <customHeader>
+                    <Bar class="zp02SysMsgHeader">
+                        <contentLeft>
+                            <Title text="{i18n>msgC08MandatoryAttachTitle}" level="H2" class="zp02SysMsgTitle" />
+                        </contentLeft>
+                        <contentRight>
+                            <Button icon="assets/figma/zp02/step5/icon-close-24-dark.svg"
+                                    type="Transparent"
+                                    tooltip="{i18n>step5ActionCloseDialog}"
+                                    press=".onMandatoryDialogCancel"
+                                    class="zp02SysMsgClose" />
+                        </contentRight>
+                    </Bar>
+                </customHeader>
+                <Text text="{i18n>msgC08MandatoryAttachBody}" class="zp02SysMsgBody" />
+                <footer>
+                    <Toolbar class="zp02SysMsgFooter">
+                        <Button
+                            id="mandatoryDialogCancel"
+                            text="{i18n>msgC08BtnCancel}"
+                            press=".onMandatoryDialogCancel"
+                            class="zp02SysMsgSecondary" />
+                        <ToolbarSpacer />
+                        <Button
+                            id="mandatoryDialogNext"
+                            text="{i18n>msgC08BtnNext}"
+                            icon="assets/figma/zp02/step3/icon-arrow-right-20.svg"
+                            iconFirst="false"
+                            press=".onMandatoryDialogNext"
+                            class="zp02SysMsgPrimary" />
+                    </Toolbar>
+                </footer>
+            </Dialog>
+        </dependents>
+
+    </Page>
+
+</mvc:View>

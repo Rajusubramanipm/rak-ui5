@@ -1,0 +1,202 @@
+<mvc:View
+    controllerName="rak.services.controller.zp02.step8.Confirmation"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:rak="rak.services.control">
+
+    <Page id="confirmationPage" enableScrolling="true" class="rakPage rakApp zp02Frame">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+            <!-- Permit heading row — Figma 245:13428 shows the title only on Confirmation -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <HBox class="rakPermitHeading__left" alignItems="Center">
+                    <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg" width="30px" height="30px" class="rakPermitHeading__icon" alt="" />
+                    <Title text="New Building Permit" titleStyle="H4" class="rakPermitHeading__title" />
+                </HBox>
+            </HBox>
+
+            <!-- Context bar -->
+            <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                <items>
+                    <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{appState>/selectedProject/ownerName}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{= ${appState>/selectedProject/parcelId} || ${appState>/selectedProject/projectNumber} || '409030901' }" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{appState>/selectedProject/address}" class="rakContextBar__value" />
+                </items>
+            </HBox>
+
+            <!-- Stepper â€” step 8 active, all previous steps completed -->
+            <rak:RakStepper
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                extraSteps="{view>/extraSteps}"
+                class="rakContent rakStepperWrap" />
+
+        <VBox class="rakContent">
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- MAIN CONTENT AREA                                        -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <HBox wrap="Wrap" class="rakConfirmLayout" alignItems="Start">
+
+                <!-- LEFT COLUMN â€” confirmation details -->
+                <VBox class="rakConfirmLeft" id="confirmLeftCol">
+
+                    <!-- Submitted heading -->
+                    <VBox class="zp02ConfirmIntro">
+                        <Title text="{i18n>step8HeadingSubmitted}"
+                               level="H2"
+                               class="rakConfirmHeading" />
+                        <Text text="{i18n>step8SubHandlingTime}"
+                              wrapping="true"
+                              class="rakConfirmSubText" />
+                    </VBox>
+
+                    <!-- â”€â”€â”€ Request ID + Owner â”€â”€â”€ -->
+                    <HBox alignItems="Center" wrap="Wrap"
+                          class="rakConfirmDetailRow">
+                        <!-- checkmark + Request ID label -->
+                        <HBox alignItems="Center" class="rakConfirmCheckGroup">
+                            <core:Icon src="sap-icon://accept"
+                                       color="#53a56e"
+                                       size="1rem"
+                                       class="rakConfirmCheckIcon" />
+                            <Text text="{i18n>step8LabelRequestId}"
+                                  class="rakConfirmLabel" />
+                        </HBox>
+                        <Text text="{view>/requestId}"
+                              class="rakConfirmValue" />
+                        <Text text="{i18n>step8LabelOwnerName}"
+                              class="rakConfirmLabel" />
+                        <Text text="{view>/ownerName}"
+                              class="rakConfirmValue" />
+                    </HBox>
+
+                    <!-- â”€â”€â”€ Building IDs + Fence IDs â”€â”€â”€ -->
+                    <HBox alignItems="Center" wrap="Wrap"
+                          class="rakConfirmDetailRow">
+                        <HBox alignItems="Center" class="rakConfirmCheckGroup">
+                            <core:Icon src="sap-icon://accept"
+                                       color="#53a56e"
+                                       size="1rem"
+                                       class="rakConfirmCheckIcon" />
+                            <Text text="{i18n>step8LabelBuildingIds}"
+                                  class="rakConfirmLabel" />
+                        </HBox>
+                        <Text text="{view>/buildingIdsText}"
+                              class="rakConfirmValue" />
+                        <!-- Fence IDs â€” only shown when fences exist -->
+                        <Text text="{i18n>step8LabelFenceIds}"
+                              class="rakConfirmLabel"
+                              visible="{view>/hasFenceIds}" />
+                        <Text text="{view>/fenceIdsText}"
+                              class="rakConfirmValue"
+                              visible="{view>/hasFenceIds}" />
+                    </HBox>
+
+                    <!-- â”€â”€â”€ Notification section â”€â”€â”€ -->
+                    <VBox class="rakConfirmNotifSection">
+                        <Text text="{i18n>step8NotificationText}"
+                              wrapping="true"
+                              class="rakConfirmNotifText" />
+                        <HBox alignItems="Center" wrap="Wrap"
+                              class="rakConfirmContactRow">
+                            <!-- Email -->
+                            <HBox alignItems="Center" class="zp02ConfirmContact">
+                                <core:Icon src="sap-icon://email"
+                                           size="1rem"
+                                           color="#313131"
+                                           class="zp02ConfirmContactIcon" />
+                                <Text text="{i18n>step8MockEmail}"
+                                      class="rakConfirmContactValue" />
+                            </HBox>
+                            <!-- Phone -->
+                            <HBox alignItems="Center" class="zp02ConfirmContact">
+                                <core:Icon src="sap-icon://phone"
+                                           size="1rem"
+                                           color="#313131"
+                                           class="zp02ConfirmContactIcon" />
+                                <Text text="{i18n>step8MockPhone}"
+                                      class="rakConfirmContactValueBold" />
+                            </HBox>
+                        </HBox>
+                        <!-- UAE Pass note -->
+                        <HBox alignItems="Center" wrap="Wrap" class="rakConfirmUaePassRow">
+                            <Text text="{i18n>step8UaePassNote}"
+                                  class="rakConfirmUaePassText" />
+                            <Link text="{i18n>step8UaePassLink}"
+                                  class="rakConfirmUaePassLink"
+                                  press=".onUaePassQr" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- â”€â”€â”€ Print â”€â”€â”€ -->
+                    <HBox alignItems="Center"
+                          class="rakConfirmPrintRow">
+                        <core:Icon src="sap-icon://print"
+                                   size="1.25rem"
+                                   color="#10233e"
+                                   class="rakConfirmPrintIcon" />
+                        <Link text="{i18n>step8ActionPrint}"
+                              press=".onPrint"
+                              class="rakConfirmPrintLink" />
+                    </HBox>
+
+                    <!-- â”€â”€â”€ Back to Home button â”€â”€â”€ -->
+                    <Button text="{i18n>step8ActionBackHome}"
+                            press=".onBackHome"
+                            class="rakBtn--solid-red rakConfirmBackHomeBtn" />
+
+                    <!-- â”€â”€â”€ Upload Drawings link (Step 9) â”€â”€â”€ -->
+                    <HBox alignItems="Center" class="rakConfirmUploadRow">
+                        <core:Icon src="sap-icon://upload"
+                                   size="1rem"
+                                   color="#10233e"
+                                   class="sapUiTinyMarginEnd" />
+                        <Link text="{i18n>step8ActionUploadDrawings}"
+                              press=".onUploadDrawings"
+                              class="rakConfirmUploadLink" />
+                    </HBox>
+
+                </VBox>
+
+                <!-- RIGHT COLUMN â€” decorative flamingo illustration -->
+                <VBox class="rakConfirmRight" id="confirmRightCol" alignItems="Center" justifyContent="Center">
+                    <!-- Figma "Layer_2-2" (102754:11613), 329 × 208 -->
+                    <Image src="assets/figma/zp02/confirmation/flamingo.svg"
+                           class="rakConfirmFlamingo"
+                           width="329px"
+                           height="208px"
+                           alt="RAK Municipality Flamingo" />
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+
+    </Page>
+
+</mvc:View>

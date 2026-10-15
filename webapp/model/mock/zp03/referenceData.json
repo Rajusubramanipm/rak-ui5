@@ -1,0 +1,8 @@
+{
+  "statuses": ["ACTIVE", "EXPIRED", "CANCELLED", "DRAFT"],
+  "externalEntities": ["PSD", "E&", "Etihad WE", "DU"],
+  "workTypes": [],
+  "meta": {
+    "note": "Shell mock only — ZP03 reference data"
+  }
+}

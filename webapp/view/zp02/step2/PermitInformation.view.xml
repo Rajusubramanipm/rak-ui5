@@ -1,0 +1,308 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:rak="rak.services.control"
+    controllerName="rak.services.controller.zp02.step2.PermitInformation"
+    displayBlock="true">
+
+    <Page id="pageStep2" enableScrolling="true" class="rakPage rakApp zp02Step2 zp02Frame">
+
+        <!-- RAK Application Header -->
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <!-- Footer: Back + Next -->
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button
+                        id="btnBack"
+                        text="{i18n>actionBack}"
+                        icon="sap-icon://navigation-left-arrow"
+                        press=".onBack"
+                        type="Transparent"
+                        class="rakBackBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button
+                        id="btnNext"
+                        text="{i18n>actionNext}"
+                        icon="sap-icon://navigation-right-arrow"
+                        iconFirst="false"
+                        press=".onNext"
+                        type="Emphasized"
+                        class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+        <content>
+
+            <!-- Permit heading: title + Save as Draft + Delete -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <items>
+                    <HBox alignItems="Center" class="rakPermitHeading__left">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg"
+                                width="30px" height="30px"
+                                class="rakPermitHeading__icon"
+                                alt="New Building Permit" />
+                            <Title text="New Building Permit"
+                                titleStyle="H4"
+                                class="rakPermitHeading__title" />
+                        </items>
+                    </HBox>
+                    <HBox alignItems="Center" class="rakPermitHeading__actions">
+                        <items>
+                            <Button id="btnSaveDraft"
+                                text="{i18n>actionSaveAsDraft}"
+                                icon="assets/figma/zp02/step1/icon-20px-b.svg"
+                                press=".onSaveAsDraft"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                            <Button id="btnDelete"
+                                text="{i18n>actionDelete}"
+                                icon="assets/figma/zp02/step1/icon-20px-a.svg"
+                                press=".onDelete"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                        </items>
+                    </HBox>
+                </items>
+            </HBox>
+
+            <!-- Persistent project context bar (below heading, above stepper) -->
+            <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                <items>
+                    <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{view>/project/ownerName}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{view>/project/projectNumber}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{view>/project/address}" class="rakContextBar__value" />
+                </items>
+            </HBox>
+
+            <!-- Stepper: Step 1 completed, Step 2 active -->
+            <rak:RakStepper
+                id="rakStepper"
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                extraSteps="2"
+                class="rakContent rakStepperWrap" />
+
+            <!-- Form area (title lives inside so it inherits the container's left indent) -->
+            <VBox class="rakFormArea rakContent zp02FormArea">
+                <items>
+
+                    <!-- Section heading -->
+                    <Title text="{i18n>step2SectionTitle}" class="rakFormSectionTitle" />
+
+                    <!-- Row 1: Etisalat/Du NOC + EWE NOC + Civil Defence Area -->
+                    <HBox class="rakFormRow zp02FormRow" alignItems="Start">
+                        <items>
+
+                            <!-- Etisalat/Du NOC -->
+                            <VBox class="rakFormField zp02Field" visible="{view>/showEtisalatNoc}">
+                                <items>
+                                    <HBox class="rakFormLabelRow" alignItems="Center">
+                                        <items>
+                                            <Label text="{i18n>step2LabelEtisalatNoc}"
+                                                class="rakFormLabel rakFormLabel--required"
+                                                labelFor="inpEtisalatNoc" />
+                                            <Image id="icEtisalatInfo"
+                                                src="assets/figma/zp02/step2/icon-info-20.svg"
+                                                width="20px" height="20px"
+                                                class="zp02InfoIcon"
+                                                alt="{i18n>step2TooltipEtisalatNoc}"
+                                                tooltip="{i18n>step2TooltipEtisalatNoc}" />
+                                        </items>
+                                    </HBox>
+                                    <Input id="inpEtisalatNoc"
+                                        value="{view>/form/etisalatNocNo}"
+                                        class="rakFormInput zp02FieldControl"
+                                        valueState="{view>/errors/etisalatNocState}"
+                                        valueStateText="{view>/errors/etisalatNocMsg}"
+                                        showValueStateMessage="false"
+                                        liveChange=".onFieldChange" />
+                                    <Text text="{view>/errors/etisalatNocMsg}"
+                                        class="rakFormError zp02ValidationError"
+                                        visible="{= !!${view>/errors/etisalatNocMsg} }" />
+                                </items>
+                            </VBox>
+
+                            <!-- EWE NOC -->
+                            <VBox class="rakFormField zp02Field">
+                                <items>
+                                    <HBox class="rakFormLabelRow" alignItems="Center">
+                                        <items>
+                                            <Label text="{i18n>step2LabelEweNoc}"
+                                                class="rakFormLabel"
+                                                labelFor="inpEweNoc" />
+                                            <Image id="icEweInfo"
+                                                src="assets/figma/zp02/step2/icon-info-20.svg"
+                                                width="20px" height="20px"
+                                                class="zp02InfoIcon"
+                                                alt="{i18n>step2TooltipEweNoc}"
+                                                tooltip="{i18n>step2TooltipEweNoc}" />
+                                        </items>
+                                    </HBox>
+                                    <Input id="inpEweNoc"
+                                        value="{view>/form/eweNocNo}"
+                                        maxLength="14"
+                                        class="rakFormInput zp02FieldControl"
+                                        valueState="{view>/errors/eweNocState}"
+                                        valueStateText="{view>/errors/eweNocMsg}"
+                                        showValueStateMessage="false"
+                                        liveChange=".onFieldChange" />
+                                    <Text text="{view>/errors/eweNocMsg}"
+                                        class="rakFormError zp02ValidationError"
+                                        visible="{= !!${view>/errors/eweNocMsg} }" />
+                                </items>
+                            </VBox>
+
+                            <!-- Civil Defence Area -->
+                            <VBox class="rakFormField zp02Field">
+                                <items>
+                                    <HBox class="rakFormLabelRow" alignItems="Center">
+                                        <items>
+                                            <Label text="{i18n>step2LabelCivilDefence}"
+                                                class="rakFormLabel"
+                                                labelFor="selCivilDefence" />
+                                        </items>
+                                    </HBox>
+                                    <Select id="selCivilDefence"
+                                        selectedKey="{view>/form/civilDefenceArea}"
+                                        class="rakFormSelect zp02FieldControl"
+                                        valueState="{view>/errors/civilDefenceState}"
+                                        valueStateText="{view>/errors/civilDefenceMsg}"
+                                        change=".onFieldChange"
+                                        busy="{view>/civilDefenceAreasBusy}"
+                                        items="{path: 'view>/civilDefenceAreas', templateShareable: false}">
+                                        <core:Item key="{view>key}" text="{view>text}" />
+                                        <customData>
+                                            <core:CustomData key="zp02-empty" value="{= ${view>/form/civilDefenceArea} ? 'false' : 'true' }" writeToDom="true" />
+                                        </customData>
+                                    </Select>
+                                    <Text text="{view>/errors/civilDefenceMsg}"
+                                        class="rakFormError zp02ValidationError"
+                                        visible="{= !!${view>/errors/civilDefenceMsg} }" />
+                                </items>
+                            </VBox>
+
+                        </items>
+                    </HBox>
+
+                    <!-- Row 2: Grant Program + Grant Type + Program Expiry Date -->
+                    <HBox class="rakFormRow zp02FormRow" alignItems="Start">
+                        <items>
+                            <!-- Grant Program? -->
+                            <VBox class="rakFormField zp02Field zp02Field--grant">
+                                <items>
+                                    <HBox class="rakFormLabelRow" alignItems="Center">
+                                        <items>
+                                            <Label text="{i18n>step2LabelGrantProgram}?"
+                                                class="rakFormLabel"
+                                                labelFor="rbgGrant" />
+                                        </items>
+                                    </HBox>
+                                    <RadioButtonGroup id="rbgGrant"
+                                        columns="2"
+                                        selectedIndex="{view>/form/grantProgramIndex}"
+                                        select=".onGrantProgramChange"
+                                        class="rakRadioGroup zp02GrantGroup">
+                                        <buttons>
+                                            <RadioButton text="{i18n>step2RadioGrantYes}" class="rakRadioBox zp02GrantOption" />
+                                            <RadioButton text="{i18n>step2RadioGrantNo}"  class="rakRadioBox zp02GrantOption" />
+                                        </buttons>
+                                    </RadioButtonGroup>
+                                </items>
+                            </VBox>
+
+                            <!-- Grant Type -->
+                            <VBox class="rakFormField zp02Field" visible="{view>/showGrantFields}">
+                                <items>
+                                    <HBox class="rakFormLabelRow" alignItems="Center">
+                                        <items>
+                                            <Label text="{i18n>step2LabelGrantType}"
+                                                class="rakFormLabel rakFormLabel--required"
+                                                labelFor="selGrantType" />
+                                        </items>
+                                    </HBox>
+                                    <Select id="selGrantType"
+                                        selectedKey="{view>/form/grantType}"
+                                        class="rakFormSelect zp02FieldControl"
+                                        valueState="{view>/errors/grantTypeState}"
+                                        valueStateText="{view>/errors/grantTypeMsg}"
+                                        change=".onFieldChange"
+                                        busy="{view>/grantTypesBusy}"
+                                        items="{path: 'view>/grantTypes', templateShareable: false}">
+                                        <core:Item key="{view>key}" text="{view>text}" />
+                                        <customData>
+                                            <core:CustomData key="zp02-empty" value="{= ${view>/form/grantType} ? 'false' : 'true' }" writeToDom="true" />
+                                        </customData>
+                                    </Select>
+                                    <Text text="{view>/errors/grantTypeMsg}"
+                                        class="rakFormError zp02ValidationError"
+                                        visible="{= !!${view>/errors/grantTypeMsg} }" />
+                                </items>
+                            </VBox>
+
+                            <!-- Program Expiry Date -->
+                            <VBox class="rakFormField zp02Field" visible="{view>/showGrantFields}">
+                                <items>
+                                    <HBox class="rakFormLabelRow" alignItems="Center">
+                                        <items>
+                                            <Label text="{i18n>step2LabelGrantExpiry}"
+                                                class="rakFormLabel rakFormLabel--required"
+                                                labelFor="dpGrantExpiry" />
+                                        </items>
+                                    </HBox>
+                                    <DatePicker id="dpGrantExpiry"
+                                        value="{view>/form/grantExpiryDate}"
+                                        displayFormat="dd/MM/yyyy"
+                                        valueFormat="yyyy-MM-dd"
+                                        placeholder="{i18n>step2PlaceholderDate}"
+                                        class="rakFormDate zp02FieldControl"
+                                        valueState="{view>/errors/grantExpiryState}"
+                                        valueStateText="{view>/errors/grantExpiryMsg}"
+                                        showValueStateMessage="false"
+                                        change=".onFieldChange" />
+                                    <Text text="{view>/errors/grantExpiryMsg}"
+                                        class="rakFormError zp02ValidationError"
+                                        visible="{= !!${view>/errors/grantExpiryMsg} }" />
+                                </items>
+                            </VBox>
+
+                        </items>
+                    </HBox>
+
+                </items>
+            </VBox>
+
+            <!-- Footer spacer -->
+            <core:HTML content="&lt;div style='height:80px'&gt;&lt;/div&gt;" />
+
+        </content>
+    </Page>
+
+</mvc:View>

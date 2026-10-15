@@ -1,0 +1,178 @@
+﻿/* RAK Services — ZP03 Infrastructure NOC */
+
+.zp03Page {
+  background: #f7f8fa;
+}
+
+.zp03PlaceholderCard {
+  max-width: 720px;
+  margin: 24px auto;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+}
+
+.zp03OwnerLine.sapMText {
+  color: #667085;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.zp03Stopper.sapMMsgStrip,
+.zp03EmptyStrip.sapMMsgStrip {
+  margin: 0 40px 16px;
+  max-width: 1080px;
+}
+
+.zp03NocList.sapMList {
+  margin: 0 40px 88px;
+  max-width: 1080px;
+  background: transparent;
+  border: none;
+}
+
+.zp03NocList .sapMListUl {
+  background: transparent;
+}
+
+.zp03NocCard.sapMCLI {
+  margin: 0 0 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.zp03NocCard.sapMCLI:hover {
+  border-color: #98a2b3;
+}
+
+.zp03NocCard--selected.sapMCLI {
+  border-color: #2e90fa;
+  box-shadow: 0 0 0 1px #2e90fa;
+  background: #f5faff;
+}
+
+.zp03NocCard .sapMCLIContent {
+  padding: 0;
+}
+
+.zp03NocCardInner.sapMHBox {
+  padding: 16px 18px;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.zp03NocCard__radio.sapMRb {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+/* Selected radio uses RAK red to match Figma MOD-01 */
+.zp03NocCard--selected .zp03NocCard__radio .sapMRbBSel,
+.zp03NocCard--selected .zp03NocCard__radio.sapMRbSel .sapMRbB {
+  border-color: #c41230 !important;
+  background: #c41230 !important;
+}
+
+.zp03NocCard__body.sapMVBox {
+  width: 100%;
+  gap: 10px;
+}
+
+.zp03NocCard__top.sapMHBox {
+  margin-bottom: 4px;
+}
+
+.zp03NocCard__number.sapMTitle {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #10233e !important;
+}
+
+.zp03NocCard__badges.sapMHBox {
+  gap: 8px;
+}
+
+.zp03Badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-family: Poppins, "72", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.zp03Badge--active,
+.zp03Badge--eligible {
+  background: #d6ffe4;
+  color: #0c6128;
+}
+
+.zp03Badge--notEligible,
+.zp03Badge--expired,
+.zp03Badge--cancelled {
+  background: #fee4e2;
+  color: #b42318;
+}
+
+.zp03Badge--neutral {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.zp03NocCard__grid.sapMHBox {
+  gap: 8px 24px;
+}
+
+.zp03NocCard__field.sapMVBox {
+  min-width: 180px;
+  max-width: 260px;
+  margin: 4px 0;
+}
+
+.zp03NocCard__field--wide.sapMVBox {
+  min-width: 280px;
+  max-width: 100%;
+}
+
+.zp03NocCard__label.sapMLabel {
+  font-size: 12px;
+  color: #667085;
+  margin-bottom: 2px;
+}
+
+.zp03NocCard__value.sapMText {
+  font-size: 14px;
+  color: #10233e;
+  font-weight: 500;
+}
+
+.zp03NocCard__complexity.sapMText {
+  font-size: 12px;
+  color: #667085;
+  margin-top: 4px;
+}
+
+.zp03BackBtn.sapMBtn {
+  margin-left: 8px;
+}
+
+/* Keep placeholder pages usable */
+.zp03PlaceholderCard h2 {
+  margin: 0 0 8px;
+  color: #10233e;
+  font-size: 20px;
+}
+
+.zp03PlaceholderCard p {
+  margin: 0 0 16px;
+  color: #555;
+}

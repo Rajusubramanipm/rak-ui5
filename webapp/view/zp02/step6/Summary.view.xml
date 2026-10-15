@@ -1,0 +1,447 @@
+<mvc:View
+    controllerName="rak.services.controller.zp02.step6.Summary"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:rak="rak.services.control">
+
+    <Page id="summaryPage" enableScrolling="true" class="rakPage rakApp zp02Step6 zp02Frame">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+            <!-- Permit heading row -->
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <HBox class="rakPermitHeading__left" alignItems="Center">
+                    <Image src="assets/figma/zp02/step1/icon-permit-muni-tight.svg" width="30px" height="30px" class="rakPermitHeading__icon" />
+                    <Title text="New Building Permit" titleStyle="H4" class="rakPermitHeading__title" />
+                </HBox>
+                <HBox class="rakPermitHeading__actions" alignItems="Center">
+                    <Button id="btnSaveDraft" text="{i18n>actionSaveAsDraft}" press=".onSaveDraft" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-b.svg" class="rakPermitAction" />
+                    <Button id="btnDelete" text="{i18n>actionDelete}" press=".onDelete" type="Transparent" icon="assets/figma/zp02/step1/icon-20px-a.svg" class="rakPermitAction" />
+                </HBox>
+            </HBox>
+
+            <!-- Context bar -->
+            <HBox class="rakContextBar rakContent" alignItems="Center" wrap="Wrap">
+                <items>
+                    <Text text="{i18n>step2ContextOwner}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{appState>/selectedProject/ownerName}" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{i18n>step2ContextProject}" class="rakContextBar__text" />
+                    <Text text=" " class="rakContextBar__text" />
+                    <Text text="{= ${appState>/selectedProject/parcelId} || ${appState>/selectedProject/projectNumber} || '409030901' }" class="rakContextBar__value" />
+                    <Text text=" | " class="rakContextBar__sep" />
+                    <Text text="{appState>/selectedProject/address}" class="rakContextBar__value" />
+                </items>
+            </HBox>
+
+            <!-- Stepper -->
+            <rak:RakStepper
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                extraSteps="2"
+                class="rakContent rakStepperWrap" />
+
+        <VBox class="rakContent">
+            <!-- Summary header — Figma 245:10838 -->
+            <VBox renderType="Bare" class="zp02SumHeader">
+                <Title text="{i18n>step6SectionTitle}" level="H2" class="zp02SumPageTitle" />
+                <HBox renderType="Bare" wrap="Wrap" class="zp02SumFields">
+                    <VBox renderType="Bare" class="zp02SumField">
+                        <Label text="{i18n>step6LabelProjectNumber}" class="zp02SumFieldLabel" />
+                        <Text text="{= ${appState>/selectedProject/projectNumber} || '—' }" class="zp02SumFieldValue" />
+                    </VBox>
+                    <VBox renderType="Bare" class="zp02SumField">
+                        <Label text="{i18n>step6LabelParcelId}" class="zp02SumFieldLabel" />
+                        <Text text="{= ${appState>/selectedProject/parcelId} || '—' }" class="zp02SumFieldValue" />
+                    </VBox>
+                    <VBox renderType="Bare" class="zp02SumField">
+                        <Label text="{i18n>step6LabelOwner}" class="zp02SumFieldLabel" />
+                        <Text text="{= ${appState>/selectedProject/ownerName} || '—' }" class="zp02SumFieldValue" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- PERMIT DESCRIPTION                                      -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelPermit}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        press=".onEditPermit"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <HBox wrap="Wrap" class="rakSummaryFields rakSummaryInlineFields">
+                    <VBox class="rakSummaryInlineField" visible="{view>/summary/permit/showEtisalatNoc}">
+                        <Label text="{i18n>step2LabelEtisalatNoc}" class="rakSummaryLabel" />
+                        <Text text="{view>/summary/permit/etisalatNocNo}" class="rakSummaryValue" />
+                    </VBox>
+                    <VBox class="rakSummaryInlineField">
+                        <Label text="{i18n>step2LabelEweNoc}" class="rakSummaryLabel" />
+                        <Text text="{view>/summary/permit/eweNocNo}" class="rakSummaryValue" />
+                    </VBox>
+                    <VBox class="rakSummaryInlineField">
+                        <Label text="{i18n>step2LabelCivilDefence}" class="rakSummaryLabel" />
+                        <Text text="{view>/summary/permit/civilDefenceAreaText}" class="rakSummaryValue" />
+                    </VBox>
+                    <VBox class="rakSummaryInlineField">
+                        <Label text="{i18n>step2LabelGrantProgram}" class="rakSummaryLabel" />
+                        <Text text="{= ${view>/summary/permit/showGrantFields} ? ${i18n>step2RadioGrantYes} : ${i18n>step2RadioGrantNo} }" class="rakSummaryValue" />
+                    </VBox>
+                    <VBox class="rakSummaryInlineField" visible="{view>/summary/permit/showGrantFields}">
+                        <Label text="{i18n>step2LabelGrantType}" class="rakSummaryLabel" />
+                        <Text text="{view>/summary/permit/grantTypeText}" class="rakSummaryValue" />
+                    </VBox>
+                    <VBox class="rakSummaryInlineField" visible="{view>/summary/permit/showGrantFields}">
+                        <Label text="{i18n>step2LabelGrantExpiry}" class="rakSummaryLabel" />
+                        <Text text="{view>/summary/permit/grantExpiryDate}" class="rakSummaryValue" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- ENGINEERING CONSULTANTS                                 -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelEngineers}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        tooltip="{i18n>step6TooltipEditEngineers}"
+                        press=".onEditEngineers"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <Table
+                    id="engineersTable"
+                    items="{view>/summary/engineers}"
+                    showSeparators="None"
+                    class="rakSummaryTable">
+                    <columns>
+                        <Column width="196px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColSpeciality}" />
+                        </Column>
+                        <Column width="296px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColName}" />
+                        </Column>
+                        <Column width="156px" demandPopin="true" minScreenWidth="Desktop">
+                            <Text text="{i18n>step6ColEngineerId}" />
+                        </Column>
+                        <Column width="176px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColMobile}" />
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Desktop">
+                            <Text text="{i18n>step6ColAssignedArea}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{view>specialityText}" />
+                                <Text text="{view>engineerName}" wrapping="false" tooltip="{view>engineerName}" />
+                                <Text text="{= ${view>engineerId} || '—' }" />
+                                <Text text="{view>mobile}" />
+                                <Text text="—" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- CONTRACTOR                                              -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelContractor}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        tooltip="{i18n>step6TooltipEditContractor}"
+                        press=".onEditContractor"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <!-- Contractor present -->
+                <VBox visible="{view>/summary/contractorVisible}">
+                    <HBox wrap="Wrap" class="rakSummaryInlineFields">
+                        <VBox class="rakSummaryInlineField">
+                            <Label text="{i18n>step4ContractorNo}" class="rakSummaryLabel" />
+                            <Text text="{view>/summary/contractor/contractorNo}" class="rakSummaryValue" />
+                        </VBox>
+                        <VBox class="rakSummaryInlineField">
+                            <Label text="{i18n>step4ContractorName}" class="rakSummaryLabel" />
+                            <Text text="{view>/summary/contractor/name}" class="rakSummaryValue" />
+                        </VBox>
+                        <VBox class="rakSummaryInlineField">
+                            <Label text="{i18n>step4TradeLicenceNo}" class="rakSummaryLabel" />
+                            <Text text="{view>/summary/contractor/tradeLicenceNo}" class="rakSummaryValue" />
+                        </VBox>
+                        <VBox class="rakSummaryInlineField">
+                            <Label text="{i18n>step4TradeLicenceExpiry}" class="rakSummaryLabel" />
+                            <Text text="{view>/summary/contractor/tradeLicenceExpiry}" class="rakSummaryValue" />
+                        </VBox>
+                        <VBox class="rakSummaryInlineField">
+                            <Label text="{i18n>step4RegistrationExpiry}" class="rakSummaryLabel" />
+                            <Text text="{view>/summary/contractor/registrationExpiry}" class="rakSummaryValue" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+                <!-- Contractor absent -->
+                <Text
+                    visible="{= !${view>/summary/contractorVisible} }"
+                    text="{i18n>step6NoContractor}"
+                    class="rakSummaryEmpty" />
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- EWE CONSULTANT (hidden when same as applicant)          -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox
+                visible="{view>/summary/eweVisible}"
+                class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelEwe}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        tooltip="{i18n>step6TooltipEditEwe}"
+                        press=".onEditEwe"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <HBox wrap="Wrap" class="rakSummaryInlineFields">
+                    <VBox class="rakSummaryInlineField">
+                        <Label text="{i18n>step4EweConsultantLabel}" class="rakSummaryLabel" />
+                        <Text text="{= ${view>/summary/ewe} ? ${view>/summary/ewe/name} : '—' }" class="rakSummaryValue" />
+                    </VBox>
+                    <VBox class="rakSummaryInlineField">
+                        <Label text="{i18n>step4EweLicenceNo}" class="rakSummaryLabel" />
+                        <Text text="{= ${view>/summary/ewe} ? ${view>/summary/ewe/licenceNo} : '—' }" class="rakSummaryValue" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" visible="{view>/summary/eweVisible}" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- BUILDINGS                                               -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelBuildings}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        tooltip="{i18n>step6TooltipEditBuildings}"
+                        press=".onEditBuildings"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <Table
+                    id="buildingsTable"
+                    items="{view>/summary/buildings}"
+                    showSeparators="None"
+                    class="rakSummaryTable">
+                    <columns>
+                        <Column width="270px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColBuildingName}" />
+                        </Column>
+                        <Column width="170px" demandPopin="true" minScreenWidth="Desktop">
+                            <Text text="{i18n>step6ColConstructionType}" />
+                        </Column>
+                        <Column width="130px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColBuildingType}" />
+                        </Column>
+                        <Column width="120px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColHeight}" />
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColTypesFloors}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{view>displayName}" />
+                                <Text text="{view>constructionType}" />
+                                <Text text="{view>buildingTypeText}" />
+                                <Text text="{view>buildingHeight}" />
+                                <Text text="{view>floorSummary}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- FENCES                                                  -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelFences}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        tooltip="{i18n>step6TooltipEditFences}"
+                        press=".onEditFences"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <!-- Fences present -->
+                <Table
+                    id="fencesTable"
+                    visible="{= ${view>/summary/fences}.length > 0 }"
+                    items="{view>/summary/fences}"
+                    showSeparators="None"
+                    class="rakSummaryTable">
+                    <columns>
+                        <Column width="270px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step3ColFenceType}" />
+                        </Column>
+                        <Column width="130px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColLength}" />
+                        </Column>
+                        <Column width="120px" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step6ColFenceHeight}" />
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="{i18n>step3ColNoGates}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{view>fenceTypeText}" />
+                                <Text text="{view>length}" />
+                                <Text text="{view>height}" />
+                                <Text text="{view>numberOfGates}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <!-- No fences -->
+                <Text
+                    visible="{= ${view>/summary/fences}.length === 0 }"
+                    text="{i18n>step6NoFences}"
+                    class="rakSummaryEmpty" />
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- ATTACHMENTS                                             -->
+            <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <VBox class="rakSummarySection">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="rakSummarySectionHeader">
+                    <Title text="{i18n>step6LabelAttachments}" level="H3" class="rakSummarySectionTitle" />
+                    <Button
+                        text="{i18n>step6ActionEdit}"
+                        type="Transparent"
+                        icon="assets/figma/zp02/step6/edit-pen.svg"
+                        iconFirst="false"
+                        tooltip="{i18n>step6TooltipEditAttachments}"
+                        press=".onEditAttachments"
+                        class="rakSummaryEditBtn" />
+                </HBox>
+                <Table
+                    id="attachmentsTable"
+                    class="rakSummaryTable zp02SumAttachTable"
+                    items="{view>/summary/attachments}"
+                    showSeparators="None">
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>step6ColDocName}" />
+                        </Column>
+                        <Column hAlign="End" demandPopin="true" minScreenWidth="Phone" popinDisplay="WithoutHeader">
+                            <Text text="{i18n>step6ColFilename}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{view>docLabel}" />
+                                <!-- One cell: display filename, system label, or missing dash -->
+                                <Text text="{view>displayFilename}" class="zp02SumFile">
+                                    <customData>
+                                        <core:CustomData key="zp02-doc" writeToDom="true" value="{= ${view>displayClass} ? 'muted' : 'file' }" />
+                                    </customData>
+                                </Text>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <core:HTML content="&lt;hr class='rakSummaryDivider'/&gt;" />
+
+            <!-- bottom spacer -->
+            <VBox class="sapUiLargeMarginBottom" />
+
+        </VBox>
+
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button
+                        text="{i18n>actionBack}"
+                        icon="sap-icon://navigation-left-arrow"
+                        type="Transparent"
+                        press=".onBack"
+                        class="rakBackBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button
+                        id="submitBtn"
+                        text="{i18n>step6ActionSubmit}"
+                        icon="sap-icon://navigation-right-arrow"
+                        iconFirst="false"
+                        type="Emphasized"
+                        press=".onSubmit"
+                        class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
+    </Page>
+
+</mvc:View>
