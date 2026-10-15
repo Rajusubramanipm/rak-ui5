@@ -1,29 +1,247 @@
 ﻿<mvc:View
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    xmlns:core="sap.ui.core"
     xmlns:rak="rak.services.control"
     controllerName="rak.services.controller.zp03.modify.Details"
     displayBlock="true">
 
-    <Page id="zp03DetailsPage" showHeader="false" class="zp03Page">
+    <Page
+        id="zp03DetailsPage"
+        enableScrolling="true"
+        busy="{view>/busy}"
+        busyIndicatorDelay="0"
+        class="rakPage rakApp zp03Page zp03Mod02"
+        showHeader="true">
+
+        <customHeader>
+            <Bar class="rakHeader sapMBarMiddle">
+                <contentLeft>
+                    <core:HTML content="&lt;img class='rakHeader__logo' src='assets/figma/zp02/step1/rak-municipality-logo.svg' alt='RAK Municipality' /&gt;" />
+                </contentLeft>
+                <contentRight>
+                    <HBox class="rakHeader__user-area" alignItems="Center">
+                        <items>
+                            <Image src="assets/figma/zp02/step1/icon-user-avatar-small.svg" class="rakHeader__avatar" width="32px" height="32px" alt="User" />
+                            <Text text="{loginUser>/englishFullName}" class="rakHeader__user-name" />
+                            <Image src="assets/figma/zp02/step1/icon-chevron-down-small.svg" class="rakHeader__chevron" width="12px" height="12px" alt="" />
+                        </items>
+                    </HBox>
+                    <core:HTML content="&lt;div class='rakHeader__divider'&gt;&lt;/div&gt;&lt;img class='rakHeader__wordmark-right' src='assets/figma/zp02/step1/rak-digital-wordmark-red.svg' alt='RAK Digital' /&gt;" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <footer>
+            <Bar class="rakFooter sapMBarMiddle">
+                <contentLeft>
+                    <Button
+                        id="btnZp03Mod02Back"
+                        text="{i18n>actionBack}"
+                        icon="sap-icon://navigation-left-arrow"
+                        press=".onBack"
+                        type="Transparent"
+                        class="zp03BackOutlineBtn" />
+                </contentLeft>
+                <contentRight>
+                    <Button
+                        id="btnZp03Mod02Next"
+                        text="{i18n>actionNext}"
+                        icon="sap-icon://navigation-right-arrow"
+                        iconFirst="false"
+                        press=".onNext"
+                        type="Emphasized"
+                        class="rakNextBtn" />
+                </contentRight>
+            </Bar>
+        </footer>
+
         <content>
-            <VBox class="zp03PlaceholderCard">
-                <rak:RakStepper
-                    activeStep="{view>/activeStep}"
-                    stepLabels="{view>/stepLabels}" />
-                <Title text="ZP03 — Modify Infrastructure NOC" level="H2" titleStyle="H3" class="sapUiSmallMarginTop" />
-                <Title text="Details (placeholder)" level="H3" titleStyle="H4" class="sapUiTinyMarginTop" />
-                <Text
-                    text="{= 'Selected NOC: ' + (${appState>/zp03/modify/selectedNoc/nocNumber} || '—') }"
-                    class="sapUiTinyMarginTop" />
-                <Text
-                    text="Foundation placeholder only. Full Figma UI and BRD rules will be implemented after structure review."
-                    class="sapUiSmallMarginTop sapUiSmallMarginBottom" />
-                <HBox>
-                    <Button text="Back" type="Transparent" press=".onBack" />
-                    <Button text="Next" type="Emphasized" press=".onNext" class="sapUiTinyMarginBegin" />
+
+            <HBox class="rakPermitHeading rakContent" alignItems="Center" justifyContent="SpaceBetween">
+                <items>
+                    <HBox alignItems="Center" class="rakPermitHeading__left">
+                        <items>
+                            <Image
+                                src="assets/figma/zp02/step1/icon-permit-muni-tight.svg"
+                                width="30px"
+                                height="30px"
+                                class="rakPermitHeading__icon"
+                                alt="Modify Infrastructure NOC" />
+                            <VBox>
+                                <Title
+                                    text="{i18n>zp03ModifyTitle}"
+                                    titleStyle="H4"
+                                    class="rakPermitHeading__title" />
+                                <Text
+                                    text="{path: 'loginUser>/englishFullName', formatter: '.formatOwnerLine'}"
+                                    class="zp03OwnerLine" />
+                            </VBox>
+                        </items>
+                    </HBox>
+                    <HBox alignItems="Center" class="rakPermitHeading__actions">
+                        <items>
+                            <Button
+                                id="btnZp03Mod02SaveDraft"
+                                text="{i18n>actionSaveAsDraft}"
+                                icon="assets/figma/zp02/step1/icon-20px-b.svg"
+                                press=".onSaveAsDraft"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                            <Button
+                                id="btnZp03Mod02Delete"
+                                text="{i18n>actionDelete}"
+                                icon="assets/figma/zp02/step1/icon-20px-a.svg"
+                                press=".onDelete"
+                                type="Transparent"
+                                class="rakPermitAction" />
+                        </items>
+                    </HBox>
+                </items>
+            </HBox>
+
+            <rak:RakStepper
+                id="zp03Mod02Stepper"
+                activeStep="{view>/activeStep}"
+                stepLabels="{view>/stepLabels}"
+                class="rakContent rakStepperWrap" />
+
+            <!-- Existing NOC Details -->
+            <VBox class="rakContent zp03Section">
+                <Title text="{i18n>zp03Mod02ExistingNoc}" level="H5" titleStyle="H5" class="zp03Section__title" />
+                <HBox wrap="Wrap" class="zp03ReadonlyGrid">
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02NocNumber}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/existingNoc/nocNumber}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02NocStatus}" class="zp03ReadonlyField__label" />
+                        <Text text="{path: 'view>/existingNoc/status', formatter: '.formatStatusLabel'}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03LabelProjectRef}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/existingNoc/projectReference}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03LabelServiceGroup}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/existingNoc/serviceGroup}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03LabelProjectType}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/existingNoc/projectType}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03LabelProjectStage}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/existingNoc/projectStage}" class="zp03ReadonlyField__value" />
+                    </VBox>
                 </HBox>
             </VBox>
+
+            <!-- Applicant Details -->
+            <VBox class="rakContent zp03Section">
+                <Title text="{i18n>zp03Mod02Applicant}" level="H5" titleStyle="H5" class="zp03Section__title" />
+                <HBox wrap="Wrap" class="zp03ReadonlyGrid">
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02BusinessPartner}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/applicant/businessPartner}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02ApplicantName}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/applicant/applicantName}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02Mobile}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/applicant/mobile}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02Email}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/applicant/email}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Project Details -->
+            <VBox class="rakContent zp03Section">
+                <Title text="{i18n>zp03Mod02ProjectDetails}" level="H5" titleStyle="H5" class="zp03Section__title" />
+                <Label text="{i18n>zp03Mod02ProjectDescription}" class="zp03ReadonlyField__label" />
+                <TextArea
+                    id="taZp03ProjectDesc"
+                    value="{view>/project/description}"
+                    editable="false"
+                    rows="3"
+                    width="100%"
+                    class="zp03ReadonlyTextArea" />
+                <HBox wrap="Wrap" class="zp03ReadonlyGrid zp03ReadonlyGrid--afterTextArea">
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02ProjectOwner}" class="zp03ReadonlyField__label" />
+                        <Text text="{view>/project/owner}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02ProjectStart}" class="zp03ReadonlyField__label" />
+                        <Text text="{path: 'view>/project/startDate', formatter: '.formatDate'}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                    <VBox class="zp03ReadonlyField">
+                        <Label text="{i18n>zp03Mod02ProjectEnd}" class="zp03ReadonlyField__label" />
+                        <Text text="{path: 'view>/project/completionDate', formatter: '.formatDate'}" class="zp03ReadonlyField__value" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Project Manager Details (editable) -->
+            <VBox class="rakContent zp03Section">
+                <Title text="{i18n>zp03Mod02PmDetails}" level="H5" titleStyle="H5" class="zp03Section__title" />
+                <HBox wrap="Wrap" class="zp03EditGrid">
+                    <VBox class="zp03EditField">
+                        <Label text="{i18n>zp03Mod02PmName}" required="true" class="zp03EditField__label" />
+                        <Input
+                            id="inpZp03PmName"
+                            value="{view>/projectManager/name}"
+                            liveChange=".onPmLiveChange"
+                            valueState="{view>/errors/name/valueState}"
+                            valueStateText="{view>/errors/name/valueStateText}"
+                            width="100%"
+                            class="zp03EditInput" />
+                    </VBox>
+                    <VBox class="zp03EditField">
+                        <Label text="{i18n>zp03Mod02PmEmail}" required="true" class="zp03EditField__label" />
+                        <Input
+                            id="inpZp03PmEmail"
+                            value="{view>/projectManager/email}"
+                            type="Email"
+                            liveChange=".onPmLiveChange"
+                            valueState="{view>/errors/email/valueState}"
+                            valueStateText="{view>/errors/email/valueStateText}"
+                            width="100%"
+                            class="zp03EditInput" />
+                    </VBox>
+                    <VBox class="zp03EditField">
+                        <Label text="{i18n>zp03Mod02PmMobile}" required="true" class="zp03EditField__label" />
+                        <Input
+                            id="inpZp03PmMobile"
+                            value="{view>/projectManager/mobile}"
+                            type="Tel"
+                            liveChange=".onPmLiveChange"
+                            valueState="{view>/errors/mobile/valueState}"
+                            valueStateText="{view>/errors/mobile/valueStateText}"
+                            width="100%"
+                            class="zp03EditInput" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Comments -->
+            <VBox class="rakContent zp03Section zp03Section--last">
+                <Title text="{i18n>zp03Mod02Comments}" level="H5" titleStyle="H5" class="zp03Section__title" />
+                <Label text="{i18n>zp03Mod02Comments}" class="zp03EditField__label" />
+                <TextArea
+                    id="taZp03Comments"
+                    value="{view>/comments}"
+                    rows="4"
+                    width="100%"
+                    liveChange=".onCommentsLiveChange"
+                    class="zp03EditTextArea" />
+            </VBox>
+
         </content>
     </Page>
 </mvc:View>

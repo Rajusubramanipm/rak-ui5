@@ -36,6 +36,19 @@ sap.ui.define([
             return adapter().validateModifyEligibility(sNocId);
         },
 
+        getModifyDetails: function (oSelectedNoc) {
+            return adapter().getModifyDetails(oSelectedNoc);
+        },
+
+        /**
+         * FR017 — Save Modify request as draft.
+         * @param {object} oDraftPayload
+         * @returns {Promise<object>} draft with caseNumber + status Saved as Draft
+         */
+        saveModifyDraft: function (oDraftPayload) {
+            return adapter().saveModifyDraft(oDraftPayload);
+        },
+
         getModifyDraft: function () {
             return adapter().getModifyDraft();
         },

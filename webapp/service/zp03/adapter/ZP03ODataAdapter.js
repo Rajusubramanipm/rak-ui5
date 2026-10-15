@@ -12,11 +12,10 @@ sap.ui.define([], function () {
         getModifyStepperLabels: function () {
             return Promise.resolve([
                 "Select NOC",
-                "Details",
+                "Modification Details",
                 "Work Location",
                 "Attachments",
-                "Review",
-                "Confirmation"
+                "Review"
             ]);
         },
 
@@ -27,6 +26,15 @@ sap.ui.define([], function () {
         validateModifyEligibility: function () {
             return notImplemented("validateModifyEligibility");
         },
+
+        getModifyDetails: function () {
+            return notImplemented("getModifyDetails");
+        },
+
+        saveModifyDraft: function () {
+            return notImplemented("saveModifyDraft");
+        },
+
 
         getModifyDraft: function () {
             return notImplemented("getModifyDraft");

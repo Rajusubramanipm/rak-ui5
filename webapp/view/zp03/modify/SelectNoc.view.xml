@@ -34,18 +34,10 @@
 
         <footer>
             <Bar class="rakFooter sapMBarMiddle">
-                <contentLeft>
-                    <Button
-                        id="btnZp03Back"
-                        text="{i18n>actionBack}"
-                        type="Transparent"
-                        press=".onBack"
-                        class="zp03BackBtn" />
-                </contentLeft>
                 <contentRight>
                     <Button
-                        id="btnZp03Continue"
-                        text="{i18n>actionContinue}"
+                        id="btnZp03Next"
+                        text="{i18n>actionNext}"
                         icon="sap-icon://navigation-right-arrow"
                         iconFirst="false"
                         press=".onContinue"
@@ -82,12 +74,14 @@
                     <HBox alignItems="Center" class="rakPermitHeading__actions">
                         <items>
                             <Button
+                                id="btnZp03SaveDraft"
                                 text="{i18n>actionSaveAsDraft}"
                                 icon="assets/figma/zp02/step1/icon-20px-b.svg"
                                 press=".onSaveAsDraft"
                                 type="Transparent"
                                 class="rakPermitAction" />
                             <Button
+                                id="btnZp03Delete"
                                 text="{i18n>actionDelete}"
                                 icon="assets/figma/zp02/step1/icon-20px-a.svg"
                                 press=".onDelete"
@@ -111,77 +105,24 @@
                 </items>
             </VBox>
 
-            <HBox id="zp03FilterRow" class="rakFilters rakContent" alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
+            <!-- STATE 02 — No eligible NOC -->
+            <VBox
+                id="zp03EmptyState"
+                visible="{view>/showEmptyState}"
+                class="rakContent zp03EmptyState"
+                alignItems="Center">
                 <items>
-                    <HBox class="rakFilters__dropdowns" alignItems="Center" wrap="Wrap">
-                        <items>
-                            <Select
-                                id="selZp03Status"
-                                width="160px"
-                                class="rakSelect"
-                                selectedKey="{view>/filters/status}"
-                                change=".onFilterChange"
-                                items="{path: 'view>/statusOptions', templateShareable: false}">
-                                <core:Item key="{view>key}" text="{view>text}" />
-                            </Select>
-                            <Select
-                                id="selZp03NocType"
-                                width="180px"
-                                class="rakSelect"
-                                selectedKey="{view>/filters/nocType}"
-                                change=".onFilterChange"
-                                items="{path: 'view>/nocTypeOptions', templateShareable: false}">
-                                <core:Item key="{view>key}" text="{view>text}" />
-                            </Select>
-                            <Select
-                                id="selZp03ProjectType"
-                                width="220px"
-                                class="rakSelect"
-                                selectedKey="{view>/filters/projectType}"
-                                change=".onFilterChange"
-                                items="{path: 'view>/projectTypeOptions', templateShareable: false}">
-                                <core:Item key="{view>key}" text="{view>text}" />
-                            </Select>
-                        </items>
-                    </HBox>
-                    <SearchField
-                        id="sfZp03Search"
-                        width="280px"
-                        placeholder="{i18n>zp03SearchPlaceholder}"
-                        value="{view>/filters/search}"
-                        search=".onSearch"
-                        liveChange=".onSearchLiveChange"
-                        class="rakSearch" />
+                    <Title text="{i18n>zp03NoEligibleTitle}" level="H3" titleStyle="H3" class="zp03EmptyState__title" />
+                    <Text text="{i18n>zp03NoEligibleBody}" class="zp03EmptyState__body" wrapping="true" textAlign="Center" />
                 </items>
-            </HBox>
+            </VBox>
 
-            <Text
-                id="zp03ResultCount"
-                text="{parts: [{path: 'view>/resultCount'}, {path: 'view>/totalCount'}], formatter: '.formatResultCount'}"
-                class="rakResultCount rakContent" />
-
-            <MessageStrip
-                id="zp03Stopper"
-                text="{view>/stopperMessage}"
-                type="Error"
-                showIcon="true"
-                showCloseButton="false"
-                visible="{= !!${view>/stopperMessage} }"
-                class="rakContent zp03Stopper" />
-
-            <MessageStrip
-                id="zp03EmptyEligible"
-                text="{i18n>zp03NoEligibleNocs}"
-                type="Warning"
-                showIcon="true"
-                showCloseButton="false"
-                visible="{view>/showEmptyEligible}"
-                class="rakContent zp03EmptyStrip" />
-
+            <!-- STATE 01 / 03 — Candidate list -->
             <List
                 id="zp03NocList"
                 mode="None"
                 showSeparators="None"
+                visible="{= !${view>/showEmptyState} }"
                 noDataText="{i18n>zp03NoResults}"
                 items="{path: 'view>/displayedNocs', templateShareable: false}"
                 updateFinished=".onListUpdateFinished"
@@ -198,24 +139,13 @@
                                 <VBox width="100%" class="zp03NocCard__body">
                                     <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="zp03NocCard__top">
                                         <Title text="{view>nocNumber}" level="H5" titleStyle="H5" class="zp03NocCard__number" />
-                                        <HBox alignItems="Center" class="zp03NocCard__badges">
-                                            <core:HTML content="{path: 'view>status', formatter: '.formatStatusBadge'}" />
-                                            <core:HTML content="{path: 'view>eligibilityStatus', formatter: '.formatEligibilityBadge'}" />
-                                        </HBox>
+                                        <core:HTML content="{path: 'view>status', formatter: '.formatStatusBadge'}" />
                                     </HBox>
 
                                     <HBox wrap="Wrap" class="zp03NocCard__grid">
                                         <VBox class="zp03NocCard__field">
                                             <Label text="{i18n>zp03LabelProjectRef}" class="zp03NocCard__label" />
                                             <Text text="{view>projectReference}" class="zp03NocCard__value" />
-                                        </VBox>
-                                        <VBox class="zp03NocCard__field">
-                                            <Label text="{i18n>zp03LabelProjectName}" class="zp03NocCard__label" />
-                                            <Text text="{view>projectName}" class="zp03NocCard__value" />
-                                        </VBox>
-                                        <VBox class="zp03NocCard__field">
-                                            <Label text="{i18n>zp03LabelNocType}" class="zp03NocCard__label" />
-                                            <Text text="{view>nocType}" class="zp03NocCard__value" />
                                         </VBox>
                                         <VBox class="zp03NocCard__field">
                                             <Label text="{i18n>zp03LabelServiceGroup}" class="zp03NocCard__label" />
@@ -229,18 +159,6 @@
                                             <Label text="{i18n>zp03LabelProjectStage}" class="zp03NocCard__label" />
                                             <Text text="{view>projectStage}" class="zp03NocCard__value" />
                                         </VBox>
-                                        <VBox class="zp03NocCard__field">
-                                            <Label text="{i18n>zp03LabelIssueDate}" class="zp03NocCard__label" />
-                                            <Text text="{path: 'view>issueDate', formatter: '.formatDate'}" class="zp03NocCard__value" />
-                                        </VBox>
-                                        <VBox class="zp03NocCard__field">
-                                            <Label text="{i18n>zp03LabelExpiryDate}" class="zp03NocCard__label" />
-                                            <Text text="{path: 'view>expiryDate', formatter: '.formatDate'}" class="zp03NocCard__value" />
-                                        </VBox>
-                                        <VBox class="zp03NocCard__field zp03NocCard__field--wide">
-                                            <Label text="{i18n>zp03LabelEntities}" class="zp03NocCard__label" />
-                                            <Text text="{path: 'view>involvedEntities', formatter: '.formatEntities'}" class="zp03NocCard__value" />
-                                        </VBox>
                                     </HBox>
 
                                     <Text
@@ -253,6 +171,31 @@
                     </content>
                 </CustomListItem>
             </List>
+
+            <!-- STATE 03 — Selected NOC + stopper -->
+            <VBox
+                id="zp03SelectionSummary"
+                visible="{= !!${view>/selectedNocNumber} &amp;&amp; !${view>/showEmptyState} }"
+                class="rakContent zp03SelectionSummary">
+                <items>
+                    <Label text="{i18n>zp03SelectedNocLabel}" class="zp03SelectionSummary__label" />
+                    <Input
+                        id="inpZp03SelectedNoc"
+                        value="{view>/selectedNocNumber}"
+                        editable="false"
+                        width="100%"
+                        class="zp03SelectedNocInput" />
+                    <HBox
+                        visible="{= !!${view>/stopperMessage} }"
+                        alignItems="Center"
+                        class="zp03StopperRow">
+                        <items>
+                            <core:Icon src="sap-icon://message-warning" class="zp03StopperRow__icon" />
+                            <Text text="{view>/stopperMessage}" class="zp03StopperRow__text" wrapping="true" />
+                        </items>
+                    </HBox>
+                </items>
+            </VBox>
 
         </content>
     </Page>

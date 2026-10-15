@@ -1,43 +1,57 @@
-﻿sap.ui.define([
-    "sap/ui/core/mvc/Controller",
+sap.ui.define([
+    "rak/services/controller/BaseController",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "rak/services/service/zp03/ZP03ServiceFacade",
     "rak/services/service/zp03/ZP03ValidationService"
-], function (Controller, JSONModel, MessageToast, MessageBox, ZP03ServiceFacade, ZP03ValidationService) {
+], function (BaseController, JSONModel, MessageToast, MessageBox, ZP03ServiceFacade, ZP03ValidationService) {
     "use strict";
+
+    var STORAGE_KEY = "rak.services.zp03.modify.selectedNoc";
 
     function clone(o) {
         return JSON.parse(JSON.stringify(o || {}));
     }
 
-    return Controller.extend("rak.services.controller.zp03.modify.SelectNoc", {
+    function persistSelectedNoc(oNoc) {
+        try {
+            if (oNoc) {
+                window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(oNoc));
+            } else {
+                window.sessionStorage.removeItem(STORAGE_KEY);
+            }
+        } catch (e) {
+            /* ignore quota / private mode */
+        }
+    }
+
+    function readPersistedSelectedNoc() {
+        try {
+            var s = window.sessionStorage.getItem(STORAGE_KEY);
+            return s ? JSON.parse(s) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    return BaseController.extend("rak.services.controller.zp03.modify.SelectNoc", {
 
         onInit: function () {
             this.getOwnerComponent().getModel("appState").setProperty("/activeService", "zp03");
 
             this._aAllNocs = [];
-            this.setModel(new JSONModel({
+            this.getView().setModel(new JSONModel({
                 busy: false,
                 activeStep: 1,
                 stepLabels: [],
-                filters: {
-                    search: "",
-                    status: "ALL",
-                    nocType: "ALL",
-                    projectType: "ALL"
-                },
-                statusOptions: [],
-                nocTypeOptions: [],
-                projectTypeOptions: [],
                 displayedNocs: [],
                 selectedNocId: null,
+                selectedNocNumber: "",
                 canContinue: false,
+                selectionInvalid: false,
                 stopperMessage: "",
-                showEmptyEligible: false,
-                resultCount: 0,
-                totalCount: 0
+                showEmptyState: false
             }), "view");
 
             var oRouter = this.getOwnerComponent().getRouter();
@@ -47,100 +61,67 @@
 
         _onRouteMatched: function () {
             var that = this;
-            var oViewModel = this.getModel("view");
+            var oViewModel = this.getView().getModel("view");
+            var oAppState = this.getOwnerComponent().getModel("appState");
+            oAppState.setProperty("/activeService", "zp03");
             oViewModel.setProperty("/busy", true);
-            oViewModel.setProperty("/activeService", "zp03");
 
             Promise.all([
                 ZP03ServiceFacade.getModifyStepperLabels(),
                 ZP03ServiceFacade.getEligibleNocs()
             ]).then(function (aResults) {
-                var aLabels = aResults[0] || [];
-                var oPayload = aResults[1] || {};
-                var oFilters = oPayload.filterOptions || {};
-
-                that._aAllNocs = (oPayload.items || []).map(function (oItem) {
+                that._aAllNocs = (aResults[1].items || []).map(function (oItem) {
                     return clone(oItem);
                 });
 
-                oViewModel.setProperty("/stepLabels", aLabels);
-                oViewModel.setProperty("/statusOptions", oFilters.status || []);
-                oViewModel.setProperty("/nocTypeOptions", oFilters.nocType || []);
-                oViewModel.setProperty("/projectTypeOptions", oFilters.projectType || []);
-                oViewModel.setProperty("/totalCount", that._aAllNocs.length);
+                oViewModel.setProperty("/stepLabels", aResults[0] || []);
 
-                var oExisting = that.getOwnerComponent().getModel("appState").getProperty("/zp03/modify/selectedNoc");
+                var oExisting = oAppState.getProperty("/zp03/modify/selectedNoc") || readPersistedSelectedNoc();
                 if (oExisting && oExisting.nocId) {
                     oViewModel.setProperty("/selectedNocId", oExisting.nocId);
+                    oAppState.setProperty("/zp03/modify/selectedNoc", clone(oExisting));
                 }
 
-                that._applyFilters();
+                that._refreshList();
                 that._syncSelectionState();
             }).catch(function () {
                 MessageToast.show("Unable to load eligible NOCs.");
                 that._aAllNocs = [];
-                that._applyFilters();
+                that._refreshList();
             }).finally(function () {
                 oViewModel.setProperty("/busy", false);
             });
         },
 
-        _applyFilters: function () {
-            var oViewModel = this.getModel("view");
-            var oFilters = oViewModel.getProperty("/filters") || {};
-            var sSearch = String(oFilters.search || "").trim().toLowerCase();
-            var sStatus = oFilters.status || "ALL";
-            var sNocType = oFilters.nocType || "ALL";
-            var sProjectType = oFilters.projectType || "ALL";
+        _refreshList: function () {
+            var oViewModel = this.getView().getModel("view");
             var sSelectedId = oViewModel.getProperty("/selectedNocId");
 
-            var aFiltered = this._aAllNocs.filter(function (oNoc) {
-                if (sStatus !== "ALL" && String(oNoc.status).toUpperCase() !== sStatus) {
-                    return false;
-                }
-                if (sNocType !== "ALL" && oNoc.nocType !== sNocType) {
-                    return false;
-                }
-                if (sProjectType !== "ALL" && oNoc.projectType !== sProjectType) {
-                    return false;
-                }
-                if (!sSearch) {
-                    return true;
-                }
-                var aHaystack = [
-                    oNoc.nocNumber,
-                    oNoc.projectReference,
-                    oNoc.projectName,
-                    oNoc.nocType,
-                    oNoc.projectType,
-                    oNoc.serviceGroup
-                ].join(" ").toLowerCase();
-                return aHaystack.indexOf(sSearch) !== -1;
+            // Figma list = ACTIVE candidates only (later-stage blockers remain visible)
+            var aList = this._aAllNocs.filter(function (oNoc) {
+                return ZP03ValidationService.isListCandidate(oNoc);
             }).map(function (oNoc) {
                 var oCopy = clone(oNoc);
                 oCopy.selected = oCopy.nocId === sSelectedId;
                 return oCopy;
             });
 
-            oViewModel.setProperty("/displayedNocs", aFiltered);
-            oViewModel.setProperty("/resultCount", aFiltered.length);
-
-            var bHasEligible = this._aAllNocs.some(function (oNoc) {
-                return String(oNoc.status).toUpperCase() === "ACTIVE"
-                    && String(oNoc.eligibilityStatus).toUpperCase() === "ELIGIBLE";
-            });
-            // Empty-eligible banner when catalogue has no eligible NOCs (or load returned none)
-            oViewModel.setProperty("/showEmptyEligible", !bHasEligible);
+            oViewModel.setProperty("/displayedNocs", aList);
+            oViewModel.setProperty("/showEmptyState", aList.length === 0);
         },
 
         onListUpdateFinished: function () {
             var oList = this.byId("zp03NocList");
+            var oViewModel = this.getView().getModel("view");
             if (!oList) {
                 return;
             }
+            var bInvalid = !!oViewModel.getProperty("/selectionInvalid");
             oList.getItems().forEach(function (oItem) {
                 var oCtx = oItem.getBindingContext("view");
-                oItem.toggleStyleClass("zp03NocCard--selected", !!(oCtx && oCtx.getProperty("selected")));
+                var bSelected = !!(oCtx && oCtx.getProperty("selected"));
+                oItem.toggleStyleClass("zp03NocCard--selected", bSelected && !bInvalid);
+                oItem.toggleStyleClass("zp03NocCard--invalid", bSelected && bInvalid);
             });
         },
 
@@ -153,32 +134,48 @@
             })[0] || null;
         },
 
+        _applyValidationToView: function (oNoc, oResult) {
+            var oViewModel = this.getView().getModel("view");
+            var oAppState = this.getOwnerComponent().getModel("appState");
+            var bValid = !!(oResult && oResult.valid);
+
+            oViewModel.setProperty("/canContinue", bValid);
+            oViewModel.setProperty("/selectionInvalid", !!(oNoc && !bValid));
+            oViewModel.setProperty("/stopperMessage", (oNoc && !bValid) ? (oResult.message || "") : "");
+            oViewModel.setProperty("/selectedNocNumber", oNoc ? (oNoc.nocNumber || "") : "");
+
+            if (bValid && oNoc) {
+                var oStore = clone(oNoc);
+                oAppState.setProperty("/zp03/modify/selectedNoc", oStore);
+                persistSelectedNoc(oStore);
+            } else {
+                oAppState.setProperty("/zp03/modify/selectedNoc", null);
+                // Keep invalid selection visible for STATE 03, but do not persist as journey selection
+                if (!oNoc) {
+                    persistSelectedNoc(null);
+                }
+            }
+
+            var oInput = this.byId("inpZp03SelectedNoc");
+            if (oInput) {
+                oInput.toggleStyleClass("zp03SelectedNocInput--error", !!(oNoc && !bValid));
+            }
+
+            this.onListUpdateFinished();
+        },
+
         _syncSelectionState: function () {
-            var oViewModel = this.getModel("view");
-            var sNocId = oViewModel.getProperty("/selectedNocId");
+            var sNocId = this.getView().getModel("view").getProperty("/selectedNocId");
             var oNoc = this._findNocById(sNocId);
             var oValidation = ZP03ValidationService.validateNocSelection(oNoc);
-
-            oViewModel.setProperty("/canContinue", !!oValidation.valid);
-            oViewModel.setProperty("/stopperMessage", oValidation.valid ? "" : (oNoc ? oValidation.message : ""));
-
-            var oAppState = this.getOwnerComponent().getModel("appState");
-            if (oValidation.valid && oNoc) {
-                oAppState.setProperty("/zp03/modify/selectedNoc", clone(oNoc));
-            } else if (!oNoc) {
-                oAppState.setProperty("/zp03/modify/selectedNoc", null);
-            }
-            // Keep invalid selection visible with stopper, but clear persisted eligible selection
-            if (oNoc && !oValidation.valid) {
-                oAppState.setProperty("/zp03/modify/selectedNoc", null);
-            }
+            this._applyValidationToView(oNoc, oValidation);
         },
 
         _selectNoc: function (sNocId) {
             var that = this;
-            var oViewModel = this.getModel("view");
+            var oViewModel = this.getView().getModel("view");
             oViewModel.setProperty("/selectedNocId", sNocId || null);
-            this._applyFilters();
+            this._refreshList();
 
             if (!sNocId) {
                 this._syncSelectionState();
@@ -186,15 +183,7 @@
             }
 
             ZP03ServiceFacade.validateModifyEligibility(sNocId).then(function (oResult) {
-                oViewModel.setProperty("/canContinue", !!oResult.valid);
-                oViewModel.setProperty("/stopperMessage", oResult.valid ? "" : (oResult.message || ""));
-
-                var oAppState = that.getOwnerComponent().getModel("appState");
-                if (oResult.valid && oResult.noc) {
-                    oAppState.setProperty("/zp03/modify/selectedNoc", clone(oResult.noc));
-                } else {
-                    oAppState.setProperty("/zp03/modify/selectedNoc", null);
-                }
+                that._applyValidationToView(oResult.noc || that._findNocById(sNocId), oResult);
             }).catch(function () {
                 MessageToast.show("Unable to validate NOC eligibility.");
                 oViewModel.setProperty("/canContinue", false);
@@ -220,57 +209,67 @@
             this._selectNoc(oCtx.getProperty("nocId"));
         },
 
-        onFilterChange: function () {
-            this._applyFilters();
-        },
-
-        onSearch: function () {
-            this._applyFilters();
-        },
-
-        onSearchLiveChange: function (oEvent) {
-            this.getModel("view").setProperty("/filters/search", oEvent.getParameter("newValue") || "");
-            this._applyFilters();
-        },
-
         onContinue: function () {
             var that = this;
-            var sNocId = this.getModel("view").getProperty("/selectedNocId");
+            var sNocId = this.getView().getModel("view").getProperty("/selectedNocId");
             var oLocal = ZP03ValidationService.validateNocSelection(this._findNocById(sNocId));
 
             if (!oLocal.valid) {
-                this.getModel("view").setProperty("/stopperMessage", oLocal.message || "");
+                this._applyValidationToView(this._findNocById(sNocId), oLocal);
                 MessageBox.error(oLocal.message || "Please select an eligible active NOC.");
                 return;
             }
 
             ZP03ServiceFacade.validateModifyEligibility(sNocId).then(function (oResult) {
+                that._applyValidationToView(oResult.noc, oResult);
                 if (!oResult.valid) {
-                    that.getModel("view").setProperty("/stopperMessage", oResult.message || "");
-                    that.getModel("view").setProperty("/canContinue", false);
-                    that.getOwnerComponent().getModel("appState").setProperty("/zp03/modify/selectedNoc", null);
                     MessageBox.error(oResult.message || "Selected NOC is not eligible.");
                     return;
                 }
-                that.getOwnerComponent().getModel("appState").setProperty("/zp03/modify/selectedNoc", clone(oResult.noc));
                 that.getOwnerComponent().getRouter().navTo("zp03-details");
             });
         },
 
-        onBack: function () {
-            this.getOwnerComponent().getRouter().navTo("home");
-        },
-
-        onHome: function () {
-            this.getOwnerComponent().getRouter().navTo("home");
-        },
-
+        /**
+         * FR017 / §4.4.2.3.3 — Save as Draft.
+         * BR02: only validate required fields present on current step (selected NOC optional).
+         * Mock adapter assigns case number; OData persistence is API-dependent.
+         */
         onSaveAsDraft: function () {
-            MessageToast.show("Save as Draft will be available in a later ZP03 step.");
+            var that = this;
+            var oNoc = this._findNocById(this.getView().getModel("view").getProperty("/selectedNocId"));
+            var oDraftCheck = ZP03ValidationService.validateDraftAtSelectNoc(oNoc);
+
+            if (!oDraftCheck.valid) {
+                MessageBox.error(oDraftCheck.message);
+                return;
+            }
+
+            ZP03ServiceFacade.saveModifyDraft({
+                selectedNoc: oNoc ? JSON.parse(JSON.stringify(oNoc)) : null,
+                details: null
+            }).then(function (oDraft) {
+                that.getOwnerComponent().getModel("appState").setProperty("/zp03/modify/draft", oDraft);
+                MessageToast.show(
+                    "Draft saved (mock). Case number: " + (oDraft.caseNumber || "—") +
+                    ". Status: " + (oDraft.status || "Saved as Draft")
+                );
+            }).catch(function () {
+                MessageBox.error("Unable to save draft. Backend draft API is not connected yet.");
+            });
         },
 
+        /**
+         * Delete — not specified for Modify applicant flow in BRD §4.4.2.3.
+         * Kept visible (Figma) as tracked clarification; no destructive action.
+         */
         onDelete: function () {
-            MessageToast.show("Delete draft will be available in a later ZP03 step.");
+            MessageBox.information(
+                "Delete is shown per Figma MOD-01/MOD-02 chrome but is not defined in BRD V1.4 " +
+                "§4.4.2.3 (FR015–FR020) for the Modify applicant journey.\n\n" +
+                "Clarification required: whether Delete removes a Saved as Draft case only, " +
+                "or is out of scope for Phase 1."
+            );
         },
 
         formatOwnerLine: function (sName) {
@@ -281,50 +280,11 @@
             return oBundle ? oBundle.getText("zp03OwnerFallback") : "Owner";
         },
 
-        formatResultCount: function (iResult, iTotal) {
-            iResult = iResult || 0;
-            iTotal = iTotal || 0;
-            return iResult + " of " + iTotal + " NOCs found";
-        },
-
-        formatDate: function (sISO) {
-            if (!sISO) {
-                return "—";
-            }
-            var d = new Date(sISO + "T00:00:00");
-            if (isNaN(d.getTime())) {
-                return sISO;
-            }
-            return d.toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            });
-        },
-
-        formatEntities: function (aEntities) {
-            if (!aEntities || !aEntities.length) {
-                return "—";
-            }
-            return aEntities.join(", ");
-        },
-
         formatStatusBadge: function (sStatus) {
             var s = String(sStatus || "").toUpperCase();
             var sLabel = s ? s.charAt(0) + s.slice(1).toLowerCase() : "Unknown";
-            var sMod = "neutral";
-            if (s === "ACTIVE") { sMod = "active"; }
-            if (s === "EXPIRED") { sMod = "expired"; }
-            if (s === "CANCELLED") { sMod = "cancelled"; }
+            var sMod = s === "ACTIVE" ? "active" : "neutral";
             return "<span class=\"zp03Badge zp03Badge--" + sMod + "\">" + sLabel + "</span>";
-        },
-
-        formatEligibilityBadge: function (sEligibility) {
-            var s = String(sEligibility || "").toUpperCase();
-            if (s === "ELIGIBLE") {
-                return "<span class=\"zp03Badge zp03Badge--eligible\">Eligible</span>";
-            }
-            return "<span class=\"zp03Badge zp03Badge--notEligible\">Not eligible</span>";
         }
     });
 });

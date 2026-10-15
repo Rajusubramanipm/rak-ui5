@@ -1,11 +1,17 @@
 {
-  "draftId": null,
-  "nocId": null,
-  "details": {},
-  "workLocation": {},
-  "attachments": [],
-  "status": "NEW",
+  "caseNumber": null,
+  "status": "Saved as Draft",
+  "selectedNoc": null,
+  "details": {
+    "projectManager": {
+      "name": "",
+      "email": "",
+      "mobile": ""
+    },
+    "comments": ""
+  },
   "meta": {
-    "note": "Shell mock only — Modify Infrastructure NOC draft payload"
+    "brdSource": "FR017 / §4.4.2.3.3",
+    "note": "Mock draft shell — case number assigned by mock adapter on save"
   }
 }

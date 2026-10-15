@@ -1,7 +1,7 @@
-﻿/* RAK Services — ZP03 Infrastructure NOC */
+﻿/* RAK Services — ZP03 Infrastructure NOC (MOD-01 reconciled to Figma) */
 
 .zp03Page {
-  background: #f7f8fa;
+  background: #ffffff;
 }
 
 .zp03PlaceholderCard {
@@ -19,14 +19,30 @@
   margin-top: 2px;
 }
 
-.zp03Stopper.sapMMsgStrip,
-.zp03EmptyStrip.sapMMsgStrip {
-  margin: 0 40px 16px;
-  max-width: 1080px;
+/* STATE 02 empty */
+.zp03EmptyState.sapMVBox {
+  min-height: 280px;
+  padding: 64px 24px;
+  justify-content: center;
 }
 
+.zp03EmptyState__title.sapMTitle {
+  color: #10233e !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.zp03EmptyState__body.sapMText {
+  color: #667085;
+  font-size: 14px;
+  max-width: 420px;
+}
+
+/* Card list — Figma MOD-01 */
 .zp03NocList.sapMList {
-  margin: 0 40px 88px;
+  margin: 0 40px 16px;
   max-width: 1080px;
   background: transparent;
   border: none;
@@ -54,6 +70,12 @@
   background: #f5faff;
 }
 
+.zp03NocCard--invalid.sapMCLI {
+  border-color: #c41230;
+  box-shadow: 0 0 0 1px #c41230;
+  background: #fff8f8;
+}
+
 .zp03NocCard .sapMCLIContent {
   padding: 0;
 }
@@ -70,9 +92,10 @@
   flex-shrink: 0;
 }
 
-/* Selected radio uses RAK red to match Figma MOD-01 */
 .zp03NocCard--selected .zp03NocCard__radio .sapMRbBSel,
-.zp03NocCard--selected .zp03NocCard__radio.sapMRbSel .sapMRbB {
+.zp03NocCard--selected .zp03NocCard__radio.sapMRbSel .sapMRbB,
+.zp03NocCard--invalid .zp03NocCard__radio .sapMRbBSel,
+.zp03NocCard--invalid .zp03NocCard__radio.sapMRbSel .sapMRbB {
   border-color: #c41230 !important;
   background: #c41230 !important;
 }
@@ -82,18 +105,10 @@
   gap: 10px;
 }
 
-.zp03NocCard__top.sapMHBox {
-  margin-bottom: 4px;
-}
-
 .zp03NocCard__number.sapMTitle {
   font-size: 16px !important;
   font-weight: 600 !important;
   color: #10233e !important;
-}
-
-.zp03NocCard__badges.sapMHBox {
-  gap: 8px;
 }
 
 .zp03Badge {
@@ -101,7 +116,7 @@
   align-items: center;
   justify-content: center;
   min-height: 22px;
-  padding: 2px 10px;
+  padding: 2px 12px;
   border-radius: 4px;
   font-family: Poppins, "72", Arial, sans-serif;
   font-size: 12px;
@@ -110,17 +125,9 @@
   white-space: nowrap;
 }
 
-.zp03Badge--active,
-.zp03Badge--eligible {
+.zp03Badge--active {
   background: #d6ffe4;
   color: #0c6128;
-}
-
-.zp03Badge--notEligible,
-.zp03Badge--expired,
-.zp03Badge--cancelled {
-  background: #fee4e2;
-  color: #b42318;
 }
 
 .zp03Badge--neutral {
@@ -129,18 +136,13 @@
 }
 
 .zp03NocCard__grid.sapMHBox {
-  gap: 8px 24px;
+  gap: 8px 32px;
 }
 
 .zp03NocCard__field.sapMVBox {
-  min-width: 180px;
-  max-width: 260px;
+  min-width: 200px;
+  max-width: 280px;
   margin: 4px 0;
-}
-
-.zp03NocCard__field--wide.sapMVBox {
-  min-width: 280px;
-  max-width: 100%;
 }
 
 .zp03NocCard__label.sapMLabel {
@@ -158,14 +160,49 @@
 .zp03NocCard__complexity.sapMText {
   font-size: 12px;
   color: #667085;
+  margin-top: 2px;
+}
+
+/* STATE 03 selection + stopper */
+.zp03SelectionSummary.sapMVBox {
+  margin: 8px 40px 96px;
+  max-width: 1080px;
+  gap: 8px;
+}
+
+.zp03SelectionSummary__label.sapMLabel {
+  font-size: 13px;
+  color: #344054;
+  font-weight: 500;
+}
+
+.zp03SelectedNocInput.sapMInput {
+  max-width: 360px;
+}
+
+.zp03SelectedNocInput--error.sapMInput .sapMInputBaseContentWrapper {
+  border-color: #c41230 !important;
+  background: #fff8f8;
+}
+
+.zp03StopperRow.sapMHBox {
+  gap: 8px;
   margin-top: 4px;
+  align-items: flex-start;
 }
 
-.zp03BackBtn.sapMBtn {
-  margin-left: 8px;
+.zp03StopperRow__icon.sapUiIcon {
+  color: #c41230;
+  font-size: 16px;
+  margin-top: 2px;
 }
 
-/* Keep placeholder pages usable */
+.zp03StopperRow__text.sapMText {
+  color: #c41230;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .zp03PlaceholderCard h2 {
   margin: 0 0 8px;
   color: #10233e;
@@ -175,4 +212,160 @@
 .zp03PlaceholderCard p {
   margin: 0 0 16px;
   color: #555;
+}
+
+/* ========== MOD-02 Modification Details (Figma 102906:25685 / 25740) ========== */
+
+.zp03Mod02 .zp03Section.sapMVBox {
+  margin: 8px 40px 20px;
+  max-width: 1080px;
+  gap: 10px;
+}
+
+.zp03Mod02 .zp03Section--last.sapMVBox {
+  margin-bottom: 96px;
+}
+
+.zp03Section__title.sapMTitle {
+  color: #10233e !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin: 8px 0 4px;
+}
+
+.zp03ReadonlyGrid.sapMHBox,
+.zp03EditGrid.sapMHBox {
+  gap: 12px 24px;
+  width: 100%;
+}
+
+.zp03ReadonlyGrid--afterTextArea.sapMHBox {
+  margin-top: 12px;
+}
+
+.zp03ReadonlyField.sapMVBox,
+.zp03EditField.sapMVBox {
+  min-width: 200px;
+  width: calc(33.333% - 16px);
+  max-width: 340px;
+  margin: 4px 0;
+  box-sizing: border-box;
+}
+
+.zp03ReadonlyField__label.sapMLabel,
+.zp03EditField__label.sapMLabel {
+  font-size: 12px;
+  color: #667085;
+  margin-bottom: 4px;
+}
+
+.zp03EditField__label.sapMLabel.sapMLabelRequired::before,
+.zp03EditField__label.sapMLabel .sapMLabelRequired {
+  color: #c41230;
+}
+
+/* SAPUI5 required asterisk → RAK red */
+.zp03Mod02 .sapMLabel.sapMLabelRequired:before {
+  color: #c41230 !important;
+}
+
+.zp03ReadonlyField__value.sapMText {
+  font-size: 14px;
+  color: #10233e;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.zp03ReadonlyTextArea.sapMTextArea {
+  width: 100% !important;
+  max-width: 1080px;
+}
+
+.zp03ReadonlyTextArea.sapMTextArea .sapMTextAreaInner,
+.zp03ReadonlyTextArea.sapMTextArea textarea {
+  background: #f2f4f7 !important;
+  border: 1px solid #d0d5dd !important;
+  border-radius: 6px !important;
+  color: #344054 !important;
+  min-height: 72px;
+  font-family: Poppins, "72", Arial, sans-serif;
+  font-size: 14px;
+  resize: none;
+}
+
+.zp03EditInput.sapMInput {
+  width: 100%;
+}
+
+.zp03EditInput.sapMInput .sapMInputBaseContentWrapper {
+  min-height: 40px;
+  border-radius: 6px;
+  border-color: #d0d5dd;
+}
+
+.zp03EditInput.sapMInput.sapMInputBaseStateError .sapMInputBaseContentWrapper,
+.zp03EditInput.sapMInput .sapMInputBaseContentWrapper.sapMInputBaseContentWrapperStateError {
+  border-color: #c41230 !important;
+  background: #fff8f8;
+}
+
+.zp03EditTextArea.sapMTextArea {
+  width: 100% !important;
+  max-width: 1080px;
+}
+
+.zp03EditTextArea.sapMTextArea .sapMTextAreaInner,
+.zp03EditTextArea.sapMTextArea textarea {
+  border: 1px solid #d0d5dd !important;
+  border-radius: 6px !important;
+  min-height: 96px;
+  font-family: Poppins, "72", Arial, sans-serif;
+  font-size: 14px;
+}
+
+/* Footer Back — Figma outline red */
+.zp03BackOutlineBtn.sapMBtn {
+  margin-left: 8px;
+}
+
+.zp03BackOutlineBtn.sapMBtn .sapMBtnInner {
+  border: 1px solid #c41230 !important;
+  background: #ffffff !important;
+  color: #c41230 !important;
+  border-radius: 6px !important;
+  min-width: 96px;
+}
+
+.zp03BackOutlineBtn.sapMBtn .sapMBtnIcon,
+.zp03BackOutlineBtn.sapMBtn .sapMBtnContent {
+  color: #c41230 !important;
+}
+
+/* Responsive — Figma desktop-first; stack fields on tablet/phone */
+@media (max-width: 1024px) {
+  .zp03ReadonlyField.sapMVBox,
+  .zp03EditField.sapMVBox {
+    width: calc(50% - 12px);
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .zp03Mod02 .zp03Section.sapMVBox,
+  .zp03Mod02 .zp03Section--last.sapMVBox {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .zp03ReadonlyField.sapMVBox,
+  .zp03EditField.sapMVBox {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .zp03Mod02 .rakPermitHeading.rakContent {
+    flex-wrap: wrap;
+  }
 }

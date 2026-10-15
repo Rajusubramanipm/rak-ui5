@@ -70,6 +70,7 @@ sap.ui.define([
                     modify: {
                         selectedNoc: null,
                         details: null,
+                        draft: null,
                         workLocation: null,
                         attachments: null,
                         review: null,

@@ -1,0 +1,63 @@
+{
+  "applicant": {
+    "businessPartnerNumber": "10002341",
+    "businessPartnerName": "Abdullah Al-Aziz",
+    "applicantName": "Abdullah Al-Aziz",
+    "mobile": "050 123 4567",
+    "email": "a.aziz@dml.ae"
+  },
+  "byNocId": {
+    "NOC-INF-0412": {
+      "projectDescription": "Water network extension for the project area.",
+      "projectOwner": "Abdullah Al-Aziz",
+      "projectStartDate": "2026-03-01",
+      "projectCompletionDate": "2026-09-30",
+      "projectManager": {
+        "name": "Ahmed Hassan",
+        "email": "a.hassan@dml.ae",
+        "mobile": "050 123 4567"
+      },
+      "comments": "Updating the project manager details for the active Design NOC."
+    },
+    "NOC-INF-0688": {
+      "projectDescription": "House connection works for Mina Al Arab plot.",
+      "projectOwner": "Private Owner",
+      "projectStartDate": "2025-01-10",
+      "projectCompletionDate": "2025-08-30",
+      "projectManager": {
+        "name": "Khalid Al-Mansoori",
+        "email": "k.mansoori@dml.ae",
+        "mobile": "050 987 6543"
+      },
+      "comments": ""
+    },
+    "NOC-INF-2108": {
+      "projectDescription": "Access road entry and exit upgrade.",
+      "projectOwner": "RAK Public Works",
+      "projectStartDate": "2024-10-01",
+      "projectCompletionDate": "2025-06-30",
+      "projectManager": {
+        "name": "",
+        "email": "",
+        "mobile": ""
+      },
+      "comments": ""
+    }
+  },
+  "defaultProject": {
+    "projectDescription": "Infrastructure works as per issued NOC.",
+    "projectOwner": "",
+    "projectStartDate": "",
+    "projectCompletionDate": "",
+    "projectManager": {
+      "name": "",
+      "email": "",
+      "mobile": ""
+    },
+    "comments": ""
+  },
+  "meta": {
+    "brdSource": "BRD V1.4 §4.4.2.3.1 — Modification Details fields",
+    "figmaNodes": ["102906:25685", "102906:25740"]
+  }
+}

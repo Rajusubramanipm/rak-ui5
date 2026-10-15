@@ -1,0 +1,8 @@
+{
+  "items": [],
+  "meta": {
+    "scenario": "emptyEligibleList",
+    "brdSource": "Infrastructure NOC BRD V1.4 §4.4.2.3.1",
+    "note": "Empty mock response for MOD-01 STATE 02 — No eligible NOCs found. Enable via sessionStorage key rak.services.zp03.mod01.forceEmptyList=1"
+  }
+}
